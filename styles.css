@@ -1,0 +1,190 @@
+/* Reset básico */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Estilos básicos */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #e8f0fe;
+    margin: 0;
+    padding: 20px 20px 0; /* Remove o padding inferior */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Muda para flex-start para alinhar ao topo */
+    min-height: 100vh;
+}
+
+/* Container principal */
+.container {
+    width: 100%;
+    max-width: 800px; /* Limite de largura no desktop */
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    text-align: center;
+}
+
+
+/* Título com cores */
+h1 {
+    color: #3f51b5;
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+h1 .karate {
+    color: #3f51b5;
+}
+
+h1 .rmo {
+    color: #eb810f;
+}
+
+/* Seções de feedback, termo e significado */
+.feedback, .term, .meaning, #statistics {
+    margin-top: 15px;
+    font-size: 1em;
+}
+
+.term, .meaning {
+    color: #4CAF50;
+    padding: 10px;
+    border: 2px solid #4CAF50;
+    border-radius: 8px;
+    background-color: #e8f5e9;
+    font-size: 1.2em;
+}
+
+/* Botões de escolha */
+#choices {
+    margin: 15px 0;
+}
+
+#choices button {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: none;
+    border-radius: 8px;
+    background-color: #3f51b5;
+    color: white;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#choices button:hover {
+    background-color: #303f9f;
+}
+
+/* Estatísticas */
+.stats-container {
+    margin-top: 25px;
+    border-top: 2px solid #3f51b5;
+    padding-top: 15px;
+    font-size: 1em;
+}
+
+.score {
+    font-weight: bold;
+    color: #3f51b5;
+}
+
+.score span {
+    font-weight: bold;
+    color: #eb810f;
+}
+
+/* Estilos do modal */
+.modal {
+    display: none; /* Escondido por padrão */
+    position: fixed; /* Fixo na tela */
+    z-index: 1000; /* Acima de outros conteúdos */
+    left: 0;
+    top: 0;
+    width: 100%; /* Largura total */
+    height: 100%; /* Altura total */
+    overflow: auto; /* Permite scroll se necessário */
+    background-color: rgba(0, 0, 0, 0.7); /* Fundo escuro com opacidade */
+}
+
+/* Conteúdo do modal */
+.modal-content {
+    background-color: white;
+    margin: 15% auto; /* 15% do topo e centraliza */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Largura do modal */
+    max-width: 600px; /* Largura máxima */
+    border-radius: 10px; /* Bordas arredondadas */
+    text-align: justify;
+}
+
+/* Botão de fechar */
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Títulos e textos do modal */
+.modal-content h2 {
+    color: #3f51b5;
+}
+
+.modal-content p {
+    margin: 10px 0; /* Margem entre os parágrafos */
+}
+
+.modal .karate{
+    font-weight: bold;
+    color: #3f51b5;
+}
+.modal .rmo{
+    font-weight: bold;
+    color: #eb810f;
+}
+
+
+/* Ajustes para telas menores */
+@media (max-width: 600px) {
+    .container {
+        max-width: 100%;
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 1.5em;
+    }
+
+    #choices button {
+        padding: 8px;
+        font-size: 0.9em;
+    }
+
+    .feedback, .term, .meaning, #statistics {
+        font-size: 0.9em;
+    }
+
+    .score {
+        font-size: 1em;
+        color: #3f51b5;
+    }
+
+    .modal-content {
+        width: 95%; /* Largura maior em telas pequenas */
+        margin: 10% auto; /* Ajuste de margem superior */
+    }
+}

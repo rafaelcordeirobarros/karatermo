@@ -1,0 +1,68 @@
+[
+    {
+        "term": "kata",
+        "meaning": "Sequência de movimentos formais no Karate, representando uma luta imaginária.",
+        "question": {
+            "questionText": "Qual é o nome da sequência de movimentos no Karate que simula uma luta?",
+            "choices": ["kumite", "kata", "gi", "sensei"],
+            "correctAnswer": "kata"
+        },
+        "usage": ["2024-10-25"],
+        "difficulty": {
+            "branca": "hard",
+            "azul": "hard",
+            "amarela": "medium",
+            "vermelha": "medium",
+            "laranja": "medium",
+            "verde": "medium",
+            "roxa": "easy",
+            "marrom": "easy",
+            "preta": "very easy"
+        },
+        "category": "fundamentals"
+    },
+    {
+        "term": "kumite",
+        "meaning": "Treino de luta com um parceiro.",
+        "question": {
+            "questionText": "Qual é o termo para treino de luta com um parceiro no Karate?",
+            "choices": ["dojo", "kata", "kumite", "sensei"],
+            "correctAnswer": "kumite"
+        },
+        "usage": ["2024-10-02", "2024-10-16"],
+        "difficulty": {
+            "branca": "very hard",
+            "azul": "hard",
+            "amarela": "hard",
+            "vermelha": "medium",
+            "laranja": "medium",
+            "verde": "medium",
+            "roxa": "easy",
+            "marrom": "easy",
+            "preta": "very easy"
+        },
+        "category": "training"
+    },
+    {
+        "term": "gi",
+        "meaning": "Uniforme usado pelos praticantes de Karate.",
+        "question": {
+            "questionText": "Qual é o nome do uniforme usado no Karate?",
+            "choices": ["gi", "kimono", "obi", "dojo"],
+            "correctAnswer": "gi"
+        },
+        "usage": ["2024-10-03", "2024-10-20"],
+        "difficulty": {
+            "branca": "medium",
+            "azul": "medium",
+            "amarela": "easy",
+            "vermelha": "easy",
+            "laranja": "easy",
+            "verde": "easy",
+            "roxa": "very easy",
+            "marrom": "very easy",
+            "preta": "very easy"
+        },
+        "category": "equipment"
+    }
+]

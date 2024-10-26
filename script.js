@@ -20,7 +20,16 @@ async function loadTerms() {
 
 // Função para definir o termo do dia
 function setDailyTerm(terms) {
-    const today = new Date().toISOString().split("T")[0];
+    //const today = new Date().toISOString().split("T")[0];
+
+    // Create a new Date object with the current date and time
+    let date = new Date();
+    // Get the current time in milliseconds since January 1, 1970, 00:00:00 UTC
+    let utcTime = date.getTime() + (date.getTimezoneOffset() * 60000);
+    // Create a new Date object for GMT-3
+    let todayDate = new Date(utcTime - (3 * 3600000));
+    const today = todayDate.getFullYear() + "-" + (todayDate.getMonth()+1).toString().padStart(2,"0") + "-" + todayDate.getDate().toString().padStart(2,"0");
+
     const dailyTerm = terms.find(term => term.usage.includes(today));
 
     // Verifica se o usuário já respondeu ao termo do dia
@@ -63,7 +72,7 @@ function checkAnswer(selectedChoice) {
         const endTime = new Date();
         const totalTime = Math.floor((endTime - startTime) / 1000); // Tempo total em segundos
         saveResult(true, totalTime);
-        feedbackElement.textContent = "Parabéns! Você acertou!";
+        feedbackElement.textContent = "Parabéns! Você acertou! Aguarde para descobrir o termo do próximo dia.";
         displayTermAndMeaning(currentTerm.term, currentTerm.meaning); // Exibe termo e significado
     } else {
         feedbackElement.textContent = `Resposta errada! Tentativas restantes: ${maxAttempts - attempts}`;
@@ -72,7 +81,6 @@ function checkAnswer(selectedChoice) {
             const endTime = new Date();
             const totalTime = Math.floor((endTime - startTime) / 1000); // Tempo total em segundos
             saveResult(false, totalTime);
-            feedbackElement.textContent += ` O termo era "${currentTerm.term}" (${currentTerm.meaning}). Aguarde o próximo dia para responder um novo termo.`;
             displayTermAndMeaning(currentTerm.term, currentTerm.meaning); // Exibe termo e significado
         }
     }

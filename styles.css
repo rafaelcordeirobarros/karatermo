@@ -158,6 +158,32 @@ h1 .rmo {
 }
 
 
+#date-options {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+}
+
+#date-options button {
+    padding: 10px;
+    margin: 5px 0;
+    border: none;
+    background-color: #3f51b5;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#date-options button:hover {
+    background-color: #303f9f;
+}
+
+#date-options .answered-date {
+
+    background-color: #56565a !important;
+}
+
+
 /* Ajustes para telas menores */
 @media (max-width: 600px) {
     .container {

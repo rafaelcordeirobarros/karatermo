@@ -10,9 +10,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
+    
     <div class="container">
         <h1>
             <span class="karate">Karate</span><span class="rmo">rmo</span><i class="fas fa-question-circle" id="help-icon" style="cursor: pointer; margin-left: 10px;"></i>
+            <i class="fas fa-cog" id="settings-icon" style="cursor: pointer;"></i>
         </h1>
         <div id="term-container">
             <h2 id="questionText"></h2>
@@ -35,6 +37,16 @@
             <p><span class="karate">Karate</span><span class="rmo">rmo</span> é um jogo desenvolvido com o intuito de facilitar o aprendizado dos conceitos da arte marcial Karate-Do.</p>
             <p>Todo dia é sorteado um termo relacionado ao Karate-Do. Você precisa descobrir qual é o termo em até 3 tentativas.</p>
             <b>Atenção:</b><p>Quanto mais rápido você responder, mais pontos você consegue, só cuidado para não esgotar suas chances do dia.</p>
+        </div>
+    </div>
+
+    <!-- Modal para Seleção de Data -->
+    <div id="dateModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Selecionar Data</h2>
+            <p>Escolha uma data para ver um termo anterior:</p>
+            <div id="date-options"></div>
         </div>
     </div>
 

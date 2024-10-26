@@ -18,19 +18,29 @@ async function loadTerms() {
     return await response.json();
 }
 
-// Função para definir o termo do dia
-function setDailyTerm(terms) {
-    //const today = new Date().toISOString().split("T")[0];
-
+function todayInBrazil(){
     // Create a new Date object with the current date and time
     let date = new Date();
     // Get the current time in milliseconds since January 1, 1970, 00:00:00 UTC
     let utcTime = date.getTime() + (date.getTimezoneOffset() * 60000);
     // Create a new Date object for GMT-3
     let todayDate = new Date(utcTime - (3 * 3600000));
-    const today = todayDate.getFullYear() + "-" + (todayDate.getMonth()+1).toString().padStart(2,"0") + "-" + todayDate.getDate().toString().padStart(2,"0");
 
-    const dailyTerm = terms.find(term => term.usage.includes(today));
+    return todayDate;
+}
+
+var refenceDate = todayInBrazil().getFullYear() + "-" + (todayInBrazil().getMonth()+1).toString().padStart(2,"0") + "-" + todayInBrazil().getDate().toString().padStart(2,"0");
+
+// Função para definir o termo do dia
+function setDailyTerm(terms) {
+    // resetando o conteudo;
+    statsContainer.style.display = "none";
+    termElement.style.display = "none";
+    meaningElement.style.display = "none";
+    feedbackElement.style.display = "none";
+    attempts = 0;
+
+    const dailyTerm = terms.find(term => term.usage.includes(refenceDate));
 
     // Verifica se o usuário já respondeu ao termo do dia
     const results = JSON.parse(localStorage.getItem("karatermoResults")) || [];
@@ -67,12 +77,13 @@ function setDailyTerm(terms) {
 function checkAnswer(selectedChoice) {
     attempts++;
     const isCorrect = selectedChoice === currentTerm.question.correctAnswer;
-
+    feedbackElement.style.display = "block";
     if (isCorrect) {
         const endTime = new Date();
         const totalTime = Math.floor((endTime - startTime) / 1000); // Tempo total em segundos
         saveResult(true, totalTime);
         feedbackElement.textContent = "Parabéns! Você acertou! Aguarde para descobrir o termo do próximo dia.";
+        
         displayTermAndMeaning(currentTerm.term, currentTerm.meaning); // Exibe termo e significado
     } else {
         feedbackElement.textContent = `Resposta errada! Tentativas restantes: ${maxAttempts - attempts}`;
@@ -81,6 +92,7 @@ function checkAnswer(selectedChoice) {
             const endTime = new Date();
             const totalTime = Math.floor((endTime - startTime) / 1000); // Tempo total em segundos
             saveResult(false, totalTime);
+            
             displayTermAndMeaning(currentTerm.term, currentTerm.meaning); // Exibe termo e significado
         }
     }
@@ -147,29 +159,77 @@ function formatTime(seconds) {
     return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
 }
 
-
-// Seleciona os elementos do modal e do ícone de ajuda
+const instructionModal = document.getElementById("instructionModal");
+const dateModal = document.getElementById("dateModal");
 const helpIcon = document.getElementById("help-icon");
-const modal = document.getElementById("instructionModal");
-const closeButton = document.querySelector(".close-button");
+const settingsIcon = document.getElementById("settings-icon");
+const closeButtons = document.querySelectorAll(".close-button");
+const dateOptionsContainer = document.getElementById("date-options");
 
-// Abre o modal ao clicar no ícone de ajuda
-helpIcon.onclick = function() {
-    modal.style.display = "block";
-}
+// Evento para abrir o modal de instruções
+helpIcon.onclick = () => {
+    instructionModal.style.display = "block";
+};
 
-// Fecha o modal ao clicar no botão de fechar
-closeButton.onclick = function() {
-    modal.style.display = "none";
-}
+// Evento para abrir o modal de seleção de data
+settingsIcon.onclick = async () => {
+    dateModal.style.display = "block";
+    await loadAvailableDates();
+};
+
+// Evento para fechar modais ao clicar no botão de fechar
+closeButtons.forEach(button => {
+    button.onclick = () => {
+        instructionModal.style.display = "none";
+        dateModal.style.display = "none";
+    };
+});
 
 // Fecha o modal ao clicar fora do conteúdo
-window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
+window.onclick = (event) => {
+    if (event.target === instructionModal) instructionModal.style.display = "none";
+    if (event.target === dateModal) dateModal.style.display = "none";
+};
+
+// Carrega as datas disponíveis no modal
+async function loadAvailableDates() {
+    dateOptionsContainer.innerHTML = "";
+    const terms = await loadTerms();
+    const answeredTerms = JSON.parse(localStorage.getItem("karatermoResults")) || [];
+    const answeredDates = terms.filter(item => answeredTerms.some(answered => answered.term == item.term)).flatMap(item => item.usage);
+    let today = todayInBrazil().setHours(0, 0, 0, 0);  // Data de hoje sem horas/minutos/segundos para comparar
+    
+    const availableDates = terms
+        .flatMap(term => term.usage)
+        .filter(date => new Date((new Date(date)).getTime() + (3 * 3600000)) <= today) // Ignora datas futuras
+        .sort((a, b) => new Date(b) - new Date(a));
+
+    availableDates.forEach(date => {
+        const dateButton = document.createElement("button");
+        dateButton.textContent = date;
+        if (answeredDates.some(item => item == date)){ 
+            dateButton.setAttribute("disabled", "disabled");
+            dateButton.classList.add("answered-date");
+        }
+        dateButton.onclick = () => loadTermForDate(date);
+        dateOptionsContainer.appendChild(dateButton);
+    });
 }
 
+// Carrega o termo para a data selecionada
+async function loadTermForDate(date) {
+    refenceDate = date;
+    const terms = await loadTerms();
+    const selectedTerm = terms.find(term => term.usage.includes(date));
+    
+    if (selectedTerm) {
+        currentTerm = selectedTerm;
+        
+        setDailyTerm(terms);
+    }
+
+    dateModal.style.display = "none";
+}
 
 // Inicializa o jogo ao carregar a página
 window.onload = async () => {

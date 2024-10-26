@@ -12,7 +12,7 @@
             ],
             "correctAnswer": "Kihon"
         },
-        "usage": ["2024-10-25"],
+        "usage": ["2024-10-24"],
         "difficulty": {
             "white": "easy",
             "blue": "easy",
@@ -38,7 +38,7 @@
             ],
             "correctAnswer": "Kata"
         },
-        "usage": ["2024-10-26"],
+        "usage": ["2024-10-25"],
         "difficulty": {
             "white": "medium",
             "blue": "medium",
@@ -64,7 +64,7 @@
             ],
             "correctAnswer": "Kumite"
         },
-        "usage": ["2024-10-27"],
+        "usage": ["2024-10-26"],
         "difficulty": {
             "white": "hard",
             "blue": "hard",

@@ -183,6 +183,10 @@ h1 .rmo {
     background-color: #56565a !important;
 }
 
+#codigoLivre{
+    font-size: 0.8em;
+}
+
 
 /* Ajustes para telas menores */
 @media (max-width: 600px) {

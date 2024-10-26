@@ -6,6 +6,7 @@ const choicesElement = document.getElementById("choices");
 const feedbackElement = document.getElementById("feedback");
 const statsContainer = document.getElementById("stats-container");
 const statisticsElement = document.getElementById("statistics");
+const feedbackMessage = document.getElementById("feedbackMessage");
 
 let currentTerm;
 let attempts = 0;
@@ -38,6 +39,9 @@ function setDailyTerm(terms) {
     termElement.style.display = "none";
     meaningElement.style.display = "none";
     feedbackElement.style.display = "none";
+    feedbackMessage.style.display = 'none';
+    termContainer.style.display = 'none';
+
     attempts = 0;
 
     const dailyTerm = terms.find(term => term.usage.includes(refenceDate));
@@ -45,15 +49,17 @@ function setDailyTerm(terms) {
     // Verifica se o usuário já respondeu ao termo do dia
     const results = JSON.parse(localStorage.getItem("karatermoResults")) || [];
     const termAnswered = results.some(result => result.term === dailyTerm.term);
-
+    
     if (termAnswered) {
-        termContainer.innerHTML = `<h2>Você já descobriu o termo do dia! Aguardando o próximo dia.</h2>`;
+        feedbackMessage.innerHTML = `Você já descobriu o termo do dia! Aguardando o próximo dia.`;
+        feedbackMessage.style.display = 'block';
         displayTermAndMeaning(dailyTerm.term, dailyTerm.meaning); // Exibe o termo e o significado com a formatação desejada
         displayStatistics();
         return;
     }
 
     if (dailyTerm) {
+        termContainer.style.display = 'block';
         currentTerm = dailyTerm;
         termElement.textContent = "";
         meaningElement.textContent = "";
@@ -69,7 +75,8 @@ function setDailyTerm(terms) {
 
         startTime = new Date(); // Inicia o tempo ao carregar o termo
     } else {
-        termContainer.innerHTML = "<h2>Hoje não há termo disponível. Volte amanhã!</h2>";
+        feedbackMessage.innerHTML = "Hoje não há termo disponível. Volte amanhã!";
+        feedbackMessage.style.display = 'block';
     }
 }
 

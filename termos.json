@@ -78,6 +78,27 @@
         "category": "training"
     },
     {
+        "term": "Ushiro Geri",
+        "meaning": "Um chute realizado para trás, utilizado para atacar um oponente que se aproxima por trás. É uma técnica poderosa que requer equilíbrio e precisão.",
+        "question": {
+            "questionText": "Qual é o nome do chute realizado para trás no Karate?",
+            "choices": ["Yoko Geri", "Mae Geri", "Ushiro Geri", "Kizami-zuki"],
+            "correctAnswer": "Ushiro Geri"
+        },
+        "usage": ["2024-10-27"],
+        "difficulty": {
+            "white": "hard",
+            "blue": "medium",
+            "yellow": "medium",
+            "orange": "hard",
+            "green": "hard",
+            "purple": "hard",
+            "brown": "hard",
+            "black": "hard"
+        },
+        "category": "techniques"
+    },
+    {
         "term": "Gi",
         "meaning": "O uniforme tradicional utilizado pelos praticantes de Karate, composto por uma jaqueta e calças, que permite liberdade de movimento durante a prática. O Gi é frequentemente associado ao nível de habilidade do praticante, refletido pela cor do cinto.",
         "question": {
@@ -493,27 +514,6 @@
             "blue": "medium",
             "yellow": "medium",
             "orange": "medium",
-            "green": "hard",
-            "purple": "hard",
-            "brown": "hard",
-            "black": "hard"
-        },
-        "category": "techniques"
-    },
-    {
-        "term": "Ushiro Geri",
-        "meaning": "Um chute realizado para trás, utilizado para atacar um oponente que se aproxima por trás. É uma técnica poderosa que requer equilíbrio e precisão.",
-        "question": {
-            "questionText": "Qual é o nome do chute realizado para trás no Karate?",
-            "choices": ["Yoko Geri", "Mae Geri", "Ushiro Geri", "Kizami-zuki"],
-            "correctAnswer": "Ushiro Geri"
-        },
-        "usage": ["2024-11-15"],
-        "difficulty": {
-            "white": "hard",
-            "blue": "medium",
-            "yellow": "medium",
-            "orange": "hard",
             "green": "hard",
             "purple": "hard",
             "brown": "hard",

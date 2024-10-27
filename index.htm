@@ -6,16 +6,22 @@
     <title>Karatermo</title>
     <link rel="icon" href="images/karatermo_icon.ico" type="image/x-icon">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="ranking-modal-styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    
-    <div class="container">
-        <h1>
-            <span class="karate">Karate</span><span class="rmo">rmo</span><i class="fas fa-question-circle" id="help-icon" style="cursor: pointer; margin-left: 10px;"></i>
-            <i class="fas fa-cog" id="settings-icon" style="cursor: pointer;"></i>
+    <header class="main-header">
+        <i class="fas fa-question-circle" id="help-icon"></i>
+        <h1 class="title">
+            <span class="karate">Karate</span><span class="rmo">rmo</span>
         </h1>
+        <div class="right-icons">
+            <i class="fas fa-trophy" id="ranking-icon" style="display: none;"></i>
+            <i class="fas fa-cog" id="settings-icon"></i>
+        </div>
+    </header>
+    <div class="container">
         <h2 id="feedbackMessage"></h2>
         <div id="term-container">
             <h2 id="questionText"></h2>
@@ -50,6 +56,27 @@
             <h2>Selecionar Data</h2>
             <p>Escolha uma data para ver um termo anterior:</p>
             <div id="date-options"></div>
+        </div>
+    </div>
+
+
+    <!-- Ranking Modal Structure -->
+    <div id="ranking-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Ranking</h2>
+            
+            <div id="ranking-content">
+                <div class="podium">
+                    <!-- As posições do pódio serão preenchidas dinamicamente via JavaScript -->
+                </div>
+                
+                <div class="ranking-list">
+                    <ul id="ranking-items">
+                        <!-- Os itens da lista serão preenchidos dinamicamente via JavaScript -->
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 

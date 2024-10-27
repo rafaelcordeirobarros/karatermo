@@ -166,16 +166,25 @@ function formatTime(seconds) {
     return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
 }
 
+// Modal elements
 const instructionModal = document.getElementById("instructionModal");
 const dateModal = document.getElementById("dateModal");
 const helpIcon = document.getElementById("help-icon");
 const settingsIcon = document.getElementById("settings-icon");
 const closeButtons = document.querySelectorAll(".close-button");
 const dateOptionsContainer = document.getElementById("date-options");
+const rankingIcon = document.getElementById("ranking-icon");
+const rankingModal = document.getElementById("ranking-modal");
 
 // Evento para abrir o modal de instruções
 helpIcon.onclick = () => {
     instructionModal.style.display = "block";
+};
+
+// Exibir o modal ao clicar no ícone de ranking
+rankingIcon.onclick = async () => {
+    rankingModal.style.display = "block";
+    await loadRanking();
 };
 
 // Evento para abrir o modal de seleção de data
@@ -184,11 +193,13 @@ settingsIcon.onclick = async () => {
     await loadAvailableDates();
 };
 
+
 // Evento para fechar modais ao clicar no botão de fechar
 closeButtons.forEach(button => {
     button.onclick = () => {
         instructionModal.style.display = "none";
         dateModal.style.display = "none";
+        rankingModal.style.display = "none";
     };
 });
 
@@ -196,7 +207,110 @@ closeButtons.forEach(button => {
 window.onclick = (event) => {
     if (event.target === instructionModal) instructionModal.style.display = "none";
     if (event.target === dateModal) dateModal.style.display = "none";
+    if (event.target === rankingModal) {
+        rankingModal.style.display = "none";
+    }
 };
+
+// Função para carregar e exibir o ranking
+async function loadRanking() {
+    try {
+        const response = await fetch('ranking.json'); // Substitua pelo caminho correto do seu arquivo JSON
+        const rankingData = await response.json();
+
+        // Filtrar os resultados para manter apenas o último resultado de cada jogador
+        const latestResults = rankingData.map(player => {
+            const latestResult = player.results.reduce((latest, current) => {
+                return current.reportDateTime > latest.reportDateTime ? current : latest;
+            });
+            return { player: player.player, results: [latestResult] };
+        });
+
+        // Ordena os jogadores com base na pontuação e critérios de desempate
+        latestResults.sort((a, b) => {
+            if (b.results[0].score !== a.results[0].score) {
+                return b.results[0].score - a.results[0].score; // Pontuação
+            } else if (b.results[0].accuracy !== a.results[0].accuracy) {
+                return b.results[0].accuracy - a.results[0].accuracy; // Precisão
+            } else if (b.results[0].averageTime !== a.results[0].averageTime) {
+                return a.results[0].averageTime - b.results[0].averageTime; // Tempo médio (menor é melhor)
+            } else if (b.results[0].totalCorrect !== a.results[0].totalCorrect) {
+                return b.results[0].totalCorrect - a.results[0].totalCorrect; // Total correto
+            } else if (b.results[0].totalAttempts !== a.results[0].totalAttempts) {
+                return a.results[0].totalAttempts - b.results[0].totalAttempts; // Total de tentativas (menor é melhor)
+            } else {
+                return a.results[0].totalTimeSpent - b.results[0].totalTimeSpent; // Tempo total gasto (menor é melhor)
+            }
+        });
+
+        // Atualiza o conteúdo do modal
+        const podium = document.querySelector('.podium');
+        const rankingList = document.getElementById('ranking-items');
+
+        // Limpa o conteúdo anterior
+        podium.innerHTML = '';
+        rankingList.innerHTML = '';
+
+        // Atualiza o pódio e a lista de ranking
+        latestResults.forEach((player, index) => {
+            // Pódio
+            if (index < 3) {
+                const podiumPlace = document.createElement('div');
+                podiumPlace.className = `podium-place ${index === 0 ? 'first' : index === 1 ? 'second' : 'third'}`;
+                podiumPlace.innerHTML = `
+                    <div class="player-name">${player.player}</div>
+                    <div class="score">${player.results[0].score} pontos</div>
+                    <div class="place-number">${index + 1}</div>
+                `;
+                podium.appendChild(podiumPlace);
+            }
+
+            // Lista de ranking
+            const listItem = document.createElement('li');
+            const accuracyPercent = (player.results[0].accuracy * 100).toFixed(0);
+            const averageTimeInMinutes = (player.results[0].averageTime / 60000).toFixed(2);
+            const positionIcon = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
+
+            listItem.innerHTML = `
+                <span class="position ${positionIcon}">${index < 3 ? `<i class="fas fa-medal"></i> ${index + 1}º` : index + 1}</span> 
+                <strong>${player.player}</strong>: ${player.results[0].score} pontos 
+                <span class="expand-icon"><i class="fas fa-chevron-down"></i></span>
+                <div class="collapsible" style="display: none;">
+                    <div class="collapsible-content">
+                        <span>Precisão: ${accuracyPercent}%</span> | 
+                        <span>Tempo Médio: ${averageTimeInMinutes} min</span> | 
+                        <span>Total Corretos: ${player.results[0].totalCorrect}</span> | 
+                        <span>Total de Tentativas: ${player.results[0].totalAttempts}</span> | 
+                        <span>Tempo Total: ${(player.results[0].totalTimeSpent / 60000).toFixed(2)} min</span>
+                    </div>
+                </div>
+            `;
+            rankingList.appendChild(listItem);
+
+            // Evento para colapsar os critérios de desempate
+            listItem.querySelector('.expand-icon').onclick = () => {
+                const collapsible = listItem.querySelector('.collapsible');
+                const icon = listItem.querySelector('.expand-icon i');
+                if (collapsible.style.display === 'block') {
+                    collapsible.style.display = 'none';
+                    icon.classList.remove('fa-chevron-up');
+                    icon.classList.add('fa-chevron-down');
+                } else {
+                    collapsible.style.display = 'block';
+                    icon.classList.remove('fa-chevron-down');
+                    icon.classList.add('fa-chevron-up');
+                }
+            };
+        });
+    } catch (error) {
+        console.error('Erro ao carregar o ranking:', error);
+    }
+}
+
+
+
+
+
 
 // Carrega as datas disponíveis no modal
 async function loadAvailableDates() {

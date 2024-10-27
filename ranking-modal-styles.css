@@ -1,0 +1,153 @@
+/* Estilo geral para o modal de ranking */
+.ranking-modal {
+    width: 80%;         /* Largura do modal */
+    max-width: 600px;  /* Largura máxima */
+    max-height: 60vh;  /* Altura máxima do modal */
+    overflow: hidden;   /* Impede que o conteúdo do modal estoure */
+    display: flex;      /* Flexbox para alinhar o conteúdo */
+    flex-direction: column; /* Direção dos elementos do modal */  
+}
+
+/* Título do modal */
+.ranking-modal h2 {
+    margin-bottom: 20px;
+    font-size: 1.8em;
+}
+
+/* Container do pódio */
+.podium {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 20px;
+    margin-bottom: 20px;
+    margin-top: 3em;
+    font-size:  0.9em;
+}
+
+/* Estilos para cada posição no pódio */
+.podium-place {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 10px;
+    width: 100px;
+    color: #fff;
+    border-radius: 5px;
+    position: relative;
+    text-align: center;
+}
+
+.first {
+    height: 150px;
+    background-color: gold;
+}
+
+.second {
+    height: 120px;
+    background-color: silver;
+}
+
+.third {
+    height: 100px;
+    background-color: #cd7f32;
+}
+
+/* Nome e pontuação do jogador no pódio */
+.player-name {
+    position: absolute;
+    top: -30px;
+    font-weight: bold;
+    color: #3f51b5;
+}
+
+.ranking-modal .score {
+    font-size: 0.9em;
+    color: white;
+    text-align: center;
+}
+
+/* Número da posição */
+.place-number {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+/* Estilo da lista de ranking */
+.ranking-list {
+    text-align: left; /* Alinha o texto à esquerda */
+}
+
+.ranking-list ul {
+    list-style-type: none; /* Remove marcadores de lista */
+    padding: 0; /* Remove padding padrão */
+}
+
+.ranking-list li {
+    border-bottom: 1px solid #ddd; /* Linha de separação entre itens */
+    padding: 10px 0; /* Espaçamento vertical */
+}
+
+.ranking-list li:last-child {
+    border-bottom: none; /* Remove a linha do último item */
+}
+
+/* Estilo dos critérios */
+.ranking-criteria {
+    font-size: 0.9em;
+    color: #666; /* Cor mais clara para os critérios */
+}
+
+/* Estilo geral para a lista de ranking */
+.ranking-list {
+    margin-top: 20px;
+}
+
+/* Estilo para os itens da lista */
+.ranking-list li {
+    padding: 10px;
+    cursor: pointer; /* Indica que o item é clicável */
+    transition: background-color 0.3s;
+}
+
+.ranking-list li:hover {
+    background-color: #f0f0f0; /* Efeito de hover */
+}
+
+/* Estilo para os critérios de desempate */
+.collapsible {
+    display: none; /* Inicialmente escondido */
+    font-size: 0.85em; /* Tamanho da fonte menor */
+    margin-top: 5px; /* Margem superior para separar dos itens */
+    color: #555; /* Cor da fonte dos critérios de desempate */
+}
+
+.collapsible-content {
+    padding-left: 10px; /* Indentação para os critérios */
+}
+
+/* Estilo do ícone de colapsar */
+.expand-icon {
+    cursor: pointer;
+    font-size: 1.2em; /* Tamanho do ícone ajustado */
+    margin-left: 5px; /* Margem para separar do texto */
+}
+
+.position {
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.position.gold {
+    color: gold;
+}
+
+.position.silver {
+    color: silver;
+}
+
+.position.bronze {
+    color: #cd7f32;
+}

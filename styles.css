@@ -8,13 +8,56 @@
 /* Estilos básicos */
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #e8f0fe;
+    background-color: #e3ebfc;
     margin: 0;
     padding: 20px 20px 0; /* Remove o padding inferior */
     display: flex;
-    justify-content: center;
-    align-items: flex-start; /* Muda para flex-start para alinhar ao topo */
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
     min-height: 100vh;
+    gap: 20px;
+}
+
+
+/* Define o layout flexível para o header */
+.main-header {
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    font-size: 1.5em;
+}
+
+/* Estilo para o ícone de ajuda à esquerda */
+#help-icon, #ranking-icon, #settings-icon {
+    cursor: pointer;
+}
+
+/* Estilo para o título centralizado */
+.title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    margin: 0;
+}
+
+/* Estilo para a combinação "Karate" e "rmo" */
+.karate {
+    font-weight: bold;
+}
+
+.rmo {
+    font-weight: bold;
+}
+
+/* Alinhamento dos ícones à direita com espaçamento */
+.right-icons {
+    display: flex;
+    gap: 15px;
 }
 
 /* Container principal */
@@ -31,9 +74,7 @@ body {
 
 /* Título com cores */
 h1 {
-    color: #3f51b5;
     font-size: 2em;
-    margin-bottom: 20px;
 }
 
 h1 .karate {
@@ -89,12 +130,12 @@ h1 .rmo {
     font-size: 1em;
 }
 
-.score {
+#statistics .score {
     font-weight: bold;
     color: #3f51b5;
 }
 
-.score span {
+#statistics .score span {
     font-weight: bold;
     color: #eb810f;
 }
@@ -208,7 +249,7 @@ h1 .rmo {
         font-size: 0.9em;
     }
 
-    .score {
+    #statistics .score {
         font-size: 1em;
         color: #3f51b5;
     }

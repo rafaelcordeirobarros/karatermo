@@ -35,7 +35,7 @@ function localStorageExpires()
             var current = JSON.parse(value);
 
             // Checa a chave expires do item especifico se for mais antigo que a data atual ele salva no array
-            if (current.expires && current.expires <= currentDate) {
+            if (current.expires) {
                 toRemove.push(key);
             }
        }

@@ -216,7 +216,7 @@ function displayStatistics() {
 function formatTime(seconds) {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
+    const secs = Math.ceil(seconds % 60);
     return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
 }
 
@@ -342,7 +342,7 @@ async function loadRanking() {
             // Lista de ranking
             const listItem = document.createElement('li');
             const accuracyPercent = (player.results[0].accuracy).toFixed(0);
-            const averageTimeInSeconds = (player.results[0].averageTime / 1000).toFixed(2);
+            const averageTime = player.results[0].averageTime;
             const positionIcon = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
 
             listItem.innerHTML = `
@@ -352,7 +352,7 @@ async function loadRanking() {
                 <div class="collapsible" style="display: none;">
                     <div class="collapsible-content">
                         <span>Precisão: ${accuracyPercent}%</span> | 
-                        <span>Tempo Médio: ${averageTimeInSeconds} seg</span> | 
+                        <span>Tempo Médio: ${formatTime(averageTime)}</span> | 
                         <span>Total Corretos: ${player.results[0].totalCorrect}</span> | 
                         <span>Total de Tentativas: ${player.results[0].totalAttempts}</span> | 
                         <span>Tempo Total: ${(player.results[0].totalTimeSpent / 60000).toFixed(2)} min</span>

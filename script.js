@@ -19,32 +19,71 @@ const endpoint_getResults = endpoint_root + '/getResults';
 const endpoint_upsertResults = endpoint_root + '/upsertResults';
 
 
-// Função para carregar os termos do arquivo JSON
+// Função para definir cookies com expiração e log detalhado
+function setCookie(name, value, days) {
+    const date = new Date();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    const expires = `expires=${date.toUTCString()}`;
+    document.cookie = `${name}=${encodeURIComponent(JSON.stringify(value))}; ${expires}; path=/; SameSite=Strict`;
+    
+    // Imprimindo para diagnóstico após a definição
+    console.log(`Tentativa de definição do cookie: ${name}=${JSON.stringify(value)}`);
+    console.log("Após definição, estado de document.cookie:", document.cookie);
+
+    // Checando se o cookie foi realmente definido no documento
+    if (!document.cookie.includes(name)) {
+        console.warn(`O cookie ${name} não foi definido com sucesso.`);
+    }
+}
+
+// Função para obter cookies
+function getCookie(name) {
+    const nameEQ = `${name}=`;
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+        let c = cookies[i].trim();
+        if (c.indexOf(nameEQ) === 0) {
+            try {
+                return JSON.parse(decodeURIComponent(c.substring(nameEQ.length)));
+            } catch (error) {
+                console.error("Erro ao fazer parse do cookie:", error);
+                return null;
+            }
+        }
+    }
+    return null;
+}
+
+
+// Função para carregar os termos do arquivo JSON com cache em cookies de 1 dia
 let terms;
 async function loadTerms() {
-    //const response = await fetch("termos.json");
+    if (terms) return terms;
 
-    if (terms) 
-            return terms;
+    // Verifica se os termos estão no cookie
+    const cachedTerms = getCookie('terms');
+    if (cachedTerms) {
+        terms = cachedTerms;
+        return terms;
+    }
 
-    await fetch(endpoint_getTerms)
-    .then(response => {
-        if (!response.ok) {
-        throw new Error('Erro na requisição: ' + response.status);
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log('Termos recebidos:', data);
-        terms = data;
-        // Aqui você pode manipular os dados, como exibir na interface do usuário
-    })
-    .catch(error => {
+    try {
+        const response = await fetch(endpoint_getTerms);
+        if (!response.ok) throw new Error('Erro na requisição: ' + response.status);
+
+        terms = await response.json();
+        console.log('Termos recebidos:', terms);
+        
+        // Armazena os termos em um cookie por 1 dia
+        setCookie('terms', terms, 1);
+    } catch (error) {
         console.error('Erro ao buscar termos:', error);
-    });
+    }
 
     return terms;
 }
+
+
 
 function todayInBrazil(){
     // Create a new Date object with the current date and time

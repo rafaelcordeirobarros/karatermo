@@ -156,7 +156,7 @@ h1 .rmo {
 /* Conteúdo do modal */
 .modal-content {
     background-color: white;
-    margin: 15% auto; /* 15% do topo e centraliza */
+    margin: 5% auto; /* 15% do topo e centraliza */
     padding: 20px;
     border: 1px solid #888;
     width: 80%; /* Largura do modal */
@@ -228,6 +228,26 @@ h1 .rmo {
     font-size: 0.8em;
 }
 
+#send-stats-btn {
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 2px;
+    margin-left: 8px;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+#send-stats-btn i {
+    font-size: 1.1rem;
+}
+
+/* Efeito de destaque ao passar o mouse */
+#send-stats-btn:hover {
+    color: #555;
+    transform: scale(1.1);
+}
 
 /* Ajustes para telas menores */
 @media (max-width: 600px) {
@@ -259,3 +279,4 @@ h1 .rmo {
         margin: 10% auto; /* Ajuste de margem superior */
     }
 }
+

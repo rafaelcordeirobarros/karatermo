@@ -13,10 +13,37 @@ let attempts = 0;
 let maxAttempts = 3;
 let startTime;
 
+const endpoint_root = 'https://karatermo-api.onrender.com';
+const endpoint_getTerms = endpoint_root + '/getTerms';
+const endpoint_getResults = endpoint_root + '/getResults';
+const endpoint_upsertResults = endpoint_root + '/upsertResults';
+
+
 // Função para carregar os termos do arquivo JSON
+let terms;
 async function loadTerms() {
-    const response = await fetch("termos.json");
-    return await response.json();
+    //const response = await fetch("termos.json");
+
+    if (terms) 
+            return terms;
+
+    await fetch(endpoint_getTerms)
+    .then(response => {
+        if (!response.ok) {
+        throw new Error('Erro na requisição: ' + response.status);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Termos recebidos:', data);
+        terms = data;
+        // Aqui você pode manipular os dados, como exibir na interface do usuário
+    })
+    .catch(error => {
+        console.error('Erro ao buscar termos:', error);
+    });
+
+    return terms;
 }
 
 function todayInBrazil(){
@@ -130,6 +157,30 @@ function saveResult(correct, totalTime) {
     displayStatistics();
 }
 
+// Função para inserir ou atualizar um resultado usando o endpoint upsertResults
+async function upsertResults(resultData) {
+
+    try {
+      const response = await fetch(endpoint_upsertResults, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(resultData)
+      });
+  
+      if (!response.ok) {
+        throw new Error('Erro ao inserir ou atualizar o resultado');
+      }
+  
+      const data = await response.json();
+      console.log('Resultado inserido ou atualizado:', data);
+      console.log('ID do item:', data._id); // Acessa o ID do item inserido ou atualizado
+    } catch (error) {
+      console.error('Erro:', error);
+    }
+  }
+
 // Função para exibir as estatísticas do usuário
 function displayStatistics() {
     const results = JSON.parse(localStorage.getItem("karatermoResults")) || [];
@@ -158,6 +209,9 @@ function displayStatistics() {
 }
 
 
+  
+
+
 // Função para formatar o tempo em hh:mm:ss
 function formatTime(seconds) {
     const hours = Math.floor(seconds / 3600);
@@ -175,6 +229,7 @@ const closeButtons = document.querySelectorAll(".close-button");
 const dateOptionsContainer = document.getElementById("date-options");
 const rankingIcon = document.getElementById("ranking-icon");
 const rankingModal = document.getElementById("ranking-modal");
+const sendResultsModal = document.getElementById("send-stats-modal");
 
 // Evento para abrir o modal de instruções
 helpIcon.onclick = () => {
@@ -200,6 +255,7 @@ closeButtons.forEach(button => {
         instructionModal.style.display = "none";
         dateModal.style.display = "none";
         rankingModal.style.display = "none";
+        sendResultsModal.style.display = "none";
     };
 });
 
@@ -207,16 +263,30 @@ closeButtons.forEach(button => {
 window.onclick = (event) => {
     if (event.target === instructionModal) instructionModal.style.display = "none";
     if (event.target === dateModal) dateModal.style.display = "none";
-    if (event.target === rankingModal) {
-        rankingModal.style.display = "none";
-    }
+    if (event.target === sendResultsModal) sendResultsModal.style.display = "none";
+    if (event.target === rankingModal) rankingModal.style.display = "none";
 };
 
+
 // Função para carregar e exibir o ranking
+let rankingData;
 async function loadRanking() {
     try {
-        const response = await fetch('ranking.json'); // Substitua pelo caminho correto do seu arquivo JSON
-        const rankingData = await response.json();
+
+        await fetch(endpoint_getResults)
+        .then(response => {
+            if (!response.ok) {
+            throw new Error('Erro na requisição: ' + response.status);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('resultados recebidos:', data);
+            rankingData = data;
+        })
+        .catch(error => {
+            console.error('Erro ao buscar termos:', error);
+        });
 
         // Filtrar os resultados para manter apenas o último resultado de cada jogador
         const latestResults = rankingData.map(player => {
@@ -251,6 +321,10 @@ async function loadRanking() {
         podium.innerHTML = '';
         rankingList.innerHTML = '';
 
+        if (!latestResults || latestResults.length == 0){
+            podium.innerHTML = 'Nenhum resultado foi enviado. Seja o primeiro e envie suas estatísticas.';
+        }
+
         // Atualiza o pódio e a lista de ranking
         latestResults.forEach((player, index) => {
             // Pódio
@@ -258,7 +332,7 @@ async function loadRanking() {
                 const podiumPlace = document.createElement('div');
                 podiumPlace.className = `podium-place ${index === 0 ? 'first' : index === 1 ? 'second' : 'third'}`;
                 podiumPlace.innerHTML = `
-                    <div class="player-name">${player.player}</div>
+                    <div class="player-name">${player.player.name}</div>
                     <div class="score">${player.results[0].score} pontos</div>
                     <div class="place-number">${index + 1}</div>
                 `;
@@ -267,18 +341,18 @@ async function loadRanking() {
 
             // Lista de ranking
             const listItem = document.createElement('li');
-            const accuracyPercent = (player.results[0].accuracy * 100).toFixed(0);
-            const averageTimeInMinutes = (player.results[0].averageTime / 60000).toFixed(2);
+            const accuracyPercent = (player.results[0].accuracy).toFixed(0);
+            const averageTimeInSeconds = (player.results[0].averageTime / 1000).toFixed(2);
             const positionIcon = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
 
             listItem.innerHTML = `
                 <span class="position ${positionIcon}">${index < 3 ? `<i class="fas fa-medal"></i> ${index + 1}º` : index + 1}</span> 
-                <strong>${player.player}</strong>: ${player.results[0].score} pontos 
+                <strong>${player.player.name}</strong>: ${player.results[0].score} pontos 
                 <span class="expand-icon"><i class="fas fa-chevron-down"></i></span>
                 <div class="collapsible" style="display: none;">
                     <div class="collapsible-content">
                         <span>Precisão: ${accuracyPercent}%</span> | 
-                        <span>Tempo Médio: ${averageTimeInMinutes} min</span> | 
+                        <span>Tempo Médio: ${averageTimeInSeconds} seg</span> | 
                         <span>Total Corretos: ${player.results[0].totalCorrect}</span> | 
                         <span>Total de Tentativas: ${player.results[0].totalAttempts}</span> | 
                         <span>Tempo Total: ${(player.results[0].totalTimeSpent / 60000).toFixed(2)} min</span>
@@ -306,10 +380,6 @@ async function loadRanking() {
         console.error('Erro ao carregar o ranking:', error);
     }
 }
-
-
-
-
 
 
 // Carrega as datas disponíveis no modal
@@ -357,3 +427,4 @@ window.onload = async () => {
     const terms = await loadTerms();
     setDailyTerm(terms);
 };
+

@@ -7,6 +7,7 @@
     <link rel="icon" href="images/karatermo_icon.ico" type="image/x-icon">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="ranking-modal-styles.css">
+    <link rel="stylesheet" href="sendResults.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -17,7 +18,7 @@
             <span class="karate">Karate</span><span class="rmo">rmo</span>
         </h1>
         <div class="right-icons">
-            <i class="fas fa-trophy" id="ranking-icon" style="display: none;"></i>
+            <i class="fas fa-trophy" id="ranking-icon"  ></i>
             <i class="fas fa-cog" id="settings-icon"></i>
         </div>
     </header>
@@ -31,7 +32,8 @@
             <div id="meaning" class="meaning" style="display: none;"></div>
         </div>
         <div id="stats-container" class="stats-container" style="display: none;">
-            <h2>Estatísticas</h2>
+            <h2>Estatísticas<button id="send-stats-btn" onclick="openModal('send-stats-modal')"><i class="fas fa-share-square"></i></button></h2>
+            
             <div id="statistics"></div>
         </div>
     </div>
@@ -80,6 +82,41 @@
         </div>
     </div>
 
+    <!-- Modal para envio de estatísticas -->
+    <div id="send-stats-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Enviar Estatísticas</h3>
+            <p>Preencha as informações abaixo para enviar suas estatísticas e participar do ranking:</p>
+            <form id="ranking-form">
+                <label for="name">Nome</label>
+                <input type="text" id="name" maxlength="15" required>
+    
+                <label for="belt">Faixa</label>
+                <select id="belt" required>
+                    <option value="Branca">Branca</option>
+                    <option value="Azul">Azul</option>
+                    <option value="Amarela">Amarela</option>
+                    <option value="Vermelha">Vermelha</option>
+                    <option value="Laranja">Laranja</option>
+                    <option value="Verde">Verde</option>
+                    <option value="Roxa">Roxa</option>
+                    <option value="Marrom">Marrom</option>
+                    <option value="Preta">Preta</option>
+                </select>
+    
+                <label for="email">Email</label>
+                <input type="email" id="email" required>
+    
+                <label for="password">Senha</label>
+                <input type="password" id="password" required>
+    
+                <button type="submit" id="submit-ranking">Enviar para o Ranking</button>
+            </form>
+        </div>
+    </div>    
+
     <script src="script.js"></script>
+    <script src="sendResults.js"></script>
 </body>
 </html>

@@ -1,0 +1,47 @@
+/* Estilos do formulário */
+#ranking-form {
+    display: flex;
+    flex-direction: column;
+}
+
+#ranking-form label {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+#ranking-form input,
+#ranking-form select {
+    margin-top: 5px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    color: #333;
+    background-color: #fafafa;
+    transition: border 0.3s;
+}
+
+#ranking-form input:focus,
+#ranking-form select:focus {
+    border-color: #a0a0a0;
+    outline: none;
+}
+
+/* Botão de envio */
+#submit-ranking {
+    margin-top: 20px;
+    padding: 12px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#submit-ranking:hover {
+    background-color: #0056b3;
+}

@@ -35,7 +35,7 @@ function localStorageExpires()
             var current = JSON.parse(value);
 
             // Checa a chave expires do item especifico se for mais antigo que a data atual ele salva no array
-            if (current.expires) {
+            if (current.expires ) {
                 toRemove.push(key);
             }
        }
@@ -90,31 +90,40 @@ function getLocalStorage(chave)
 // Função para carregar os termos do arquivo JSON com cache em cookies de 1 dia
 let terms;
 async function loadTerms() {
-    if (terms) return terms;
+    // Exibe o overlay de loading
+    const loadingOverlay = document.getElementById("loading-overlay");
+    loadingOverlay.style.display = "flex";
+    
+    if (terms) {
+        loadingOverlay.style.display = "none"; // Oculta o loading
+        return terms;
+    }
 
     // Verifica se os termos estão no cookie
-    const cachedTerms = getLocalStorage('terms');
+    const cachedTerms = getLocalStorage("terms");
     if (cachedTerms) {
         terms = cachedTerms;
+        loadingOverlay.style.display = "none"; // Oculta o loading
         return terms;
     }
 
     try {
         const response = await fetch(endpoint_getTerms);
-        if (!response.ok) throw new Error('Erro na requisição: ' + response.status);
+        if (!response.ok) throw new Error("Erro na requisição: " + response.status);
 
         terms = await response.json();
-        console.log('Termos recebidos:', terms);
-        
+        console.log("Termos recebidos:", terms);
+
         // Armazena os termos em um cookie por 1 dia
-        setLocalStorage('terms', terms, 1*24*60);
+        setLocalStorage("terms", terms, 1 * 24 * 60);
     } catch (error) {
-        console.error('Erro ao buscar termos:', error);
+        console.error("Erro ao buscar termos:", error);
     }
 
+    // Oculta o overlay de loading ao finalizar
+    loadingOverlay.style.display = "none";
     return terms;
 }
-
 
 
 function todayInBrazil(){
@@ -342,22 +351,24 @@ window.onclick = (event) => {
 // Função para carregar e exibir o ranking
 let rankingData;
 async function loadRanking() {
-    try {
+    // Mostra o indicador de loading
+    document.getElementById('loading-ranking').style.display = 'flex';
 
+    try {
         await fetch(endpoint_getResults)
-        .then(response => {
-            if (!response.ok) {
-            throw new Error('Erro na requisição: ' + response.status);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('resultados recebidos:', data);
-            rankingData = data;
-        })
-        .catch(error => {
-            console.error('Erro ao buscar termos:', error);
-        });
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro na requisição: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('resultados recebidos:', data);
+                rankingData = data;
+            })
+            .catch(error => {
+                console.error('Erro ao buscar termos:', error);
+            });
 
         // Filtrar os resultados para manter apenas o último resultado de cada jogador
         const latestResults = rankingData.map(player => {
@@ -392,7 +403,7 @@ async function loadRanking() {
         podium.innerHTML = '';
         rankingList.innerHTML = '';
 
-        if (!latestResults || latestResults.length == 0){
+        if (!latestResults || latestResults.length === 0) {
             podium.innerHTML = 'Nenhum resultado foi enviado. Seja o primeiro e envie suas estatísticas.';
         }
 
@@ -449,6 +460,9 @@ async function loadRanking() {
         });
     } catch (error) {
         console.error('Erro ao carregar o ranking:', error);
+    } finally {
+        // Esconde o indicador de loading
+        document.getElementById('loading-ranking').style.display = 'none';
     }
 }
 

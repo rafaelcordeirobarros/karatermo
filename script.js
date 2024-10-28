@@ -19,40 +19,73 @@ const endpoint_getResults = endpoint_root + '/getResults';
 const endpoint_upsertResults = endpoint_root + '/upsertResults';
 
 
-// Função para definir cookies com expiração e log detalhado
-function setCookie(name, value, days) {
-    const date = new Date();
-    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-    const expires = `expires=${date.toUTCString()}`;
-    document.cookie = `${name}=${encodeURIComponent(JSON.stringify(value))}; ${expires}; path=/; SameSite=Lax`;
-    
-    // Imprimindo para diagnóstico após a definição
-    console.log("Após definição, estado de document.cookie:", document.cookie);
+function localStorageExpires()
+{
+    var toRemove = [],                      // Itens para serem removidos
+        currentDate = todayInBrazil().getTime(); // Data atual em milissegundos
 
-    // Checando se o cookie foi realmente definido no documento
-    if (!document.cookie.includes(name)) {
-        console.warn(`O cookie ${name} não foi definido com sucesso.`);
-    }
-}
+    for (var i = 0, j = localStorage.length; i < j; i++) {
+       var key = localStorage.key(i),
+           value = localStorage.getItem(key);
 
-// Função para obter cookies
-function getCookie(name) {
-    const nameEQ = `${name}=`;
-    const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-        let c = cookies[i].trim();
-        if (c.indexOf(nameEQ) === 0) {
-            try {
-                return JSON.parse(decodeURIComponent(c.substring(nameEQ.length)));
-            } catch (error) {
-                console.error("Erro ao fazer parse do cookie:", error);
-                return null;
+       // Verifica se o formato do item para evitar conflitar com outras aplicações
+       if (value && value[0] === "{" && value.slice(-1) === "}") {
+
+            // Decodifica de volta para JSON
+            var current = JSON.parse(value);
+
+            // Checa a chave expires do item especifico se for mais antigo que a data atual ele salva no array
+            if (current.expires && current.expires <= currentDate) {
+                toRemove.push(key);
             }
-        }
+       }
     }
-    return null;
+
+    // Remove itens que já passaram do tempo
+    // Se remover no primeiro loop isto poderia afetar a ordem,
+    // pois quando se remove um item geralmente o objeto ou array são reordenados
+    for (var i = toRemove.length - 1; i >= 0; i--) {
+        localStorage.removeItem(toRemove[i]);
+    }
 }
 
+localStorageExpires();//Auto executa a limpeza
+
+/**
+ * Função para adicionar itens no localStorage
+ * @param {string} chave Chave que será usada para obter o valor posteriormente
+ * @param {*} valor Quase qualquer tipo de valor pode ser adicionado, desde que não falhe no JSON.stringify
+ * @param {number} Tempo de vida em minutos do item
+ */
+function setLocalStorage(chave, valor, minutos)
+{
+    var expirarem = todayInBrazil().getTime() + (60000 * minutos);
+
+    localStorage.setItem(chave, JSON.stringify({
+        "value": valor,
+        "expires": expirarem
+    }));
+}
+
+/**
+ * Função para obter itens do localStorage que ainda não expiraram
+ * @param {string} chave Chave para obter o valor associado
+ * @return {*} Retorna qualquer valor, se o item tiver expirado irá retorna undefined
+ */
+function getLocalStorage(chave)
+{
+    localStorageExpires();//Limpa itens
+
+    var value = localStorage.getItem(chave);
+
+    if (value && value[0] === "{" && value.slice(-1) === "}") {
+
+        // Decodifica de volta para JSON
+        var current = JSON.parse(value);
+
+        return current.value;
+    }
+}
 
 // Função para carregar os termos do arquivo JSON com cache em cookies de 1 dia
 let terms;
@@ -60,7 +93,7 @@ async function loadTerms() {
     if (terms) return terms;
 
     // Verifica se os termos estão no cookie
-    const cachedTerms = getCookie('terms');
+    const cachedTerms = getLocalStorage('terms');
     if (cachedTerms) {
         terms = cachedTerms;
         return terms;
@@ -74,7 +107,7 @@ async function loadTerms() {
         console.log('Termos recebidos:', terms);
         
         // Armazena os termos em um cookie por 1 dia
-        setCookie('terms', terms, 1);
+        setLocalStorage('terms', terms, 1*24*60);
     } catch (error) {
         console.error('Erro ao buscar termos:', error);
     }

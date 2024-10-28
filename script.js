@@ -24,10 +24,9 @@ function setCookie(name, value, days) {
     const date = new Date();
     date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
     const expires = `expires=${date.toUTCString()}`;
-    document.cookie = `${name}=${encodeURIComponent(JSON.stringify(value))}; ${expires}; path=/; SameSite=Strict`;
+    document.cookie = `${name}=${encodeURIComponent(JSON.stringify(value))}; ${expires}; path=/; SameSite=Lax`;
     
     // Imprimindo para diagnóstico após a definição
-    console.log(`Tentativa de definição do cookie: ${name}=${JSON.stringify(value)}`);
     console.log("Após definição, estado de document.cookie:", document.cookie);
 
     // Checando se o cookie foi realmente definido no documento

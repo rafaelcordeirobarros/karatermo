@@ -355,7 +355,7 @@ async function loadRanking() {
                         <span>Tempo Médio: ${formatTime(averageTime)}</span> | 
                         <span>Total Corretos: ${player.results[0].totalCorrect}</span> | 
                         <span>Total de Tentativas: ${player.results[0].totalAttempts}</span> | 
-                        <span>Tempo Total: ${(player.results[0].totalTimeSpent / 60000).toFixed(2)} min</span>
+                        <span>Tempo Total: ${(player.results[0].totalTimeSpent / 60).toFixed(2)} min</span>
                     </div>
                 </div>
             `;

@@ -70,11 +70,10 @@ async function sendResults(lastResult) {
     .then(data => {
         console.log("Dados enviados com sucesso:", data);
         lastResult = data;
-        alert("Estatísticas enviadas com sucesso para o ranking!");
     })
     .catch(error => {
         console.error("Erro ao enviar dados:", error);
-        alert("Ocorreu um erro ao enviar as estatísticas. Tente novamente.");
+        alert("Ocorreu um erro ao enviar as estatísticas para o ranking. Tente novamente.");
     });
 
     localStorage.setItem("karatermoPlayer", JSON.stringify(lastResult));

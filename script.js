@@ -10,7 +10,7 @@ const feedbackMessage = document.getElementById("feedbackMessage");
 
 let currentTerm;
 let attempts = 0;
-let maxAttempts = 3;
+let maxAttempts = 2;
 let startTime;
 
 const endpoint_root = 'https://karatermo-api.onrender.com';
@@ -226,6 +226,7 @@ function displayTermAndMeaning(term, meaning) {
 
 // Função para salvar o resultado no local storage
 function saveResult(correct, totalTime) {
+
     const results = JSON.parse(localStorage.getItem("karatermoResults")) || [];
     results.push({
         term: currentTerm.term,
@@ -234,7 +235,29 @@ function saveResult(correct, totalTime) {
         totalTime: totalTime
     });
     localStorage.setItem("karatermoResults", JSON.stringify(results));
+
+    sendResultsToRanking();
     displayStatistics();
+}
+
+function sendResultsToRanking(){
+    const storedData = JSON.parse(localStorage.getItem("karatermoPlayer"));
+    console.log(storedData);
+    
+    if (storedData) {
+
+        const name = storedData.player.name;
+        const belt = storedData.player.belt;
+        const email = storedData.player.email;
+        const password = storedData.player.password;
+        const userData = { name, belt, email, password };
+
+        const lastResult = { player: userData, results: [getResults()]}; // função getResults fica em sendResults.js
+    
+        sendResults(lastResult); // função fica em sendResultts.js
+    }
+
+    
 }
 
 // Função para inserir ou atualizar um resultado usando o endpoint upsertResults

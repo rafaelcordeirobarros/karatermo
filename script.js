@@ -407,12 +407,12 @@ async function loadRanking() {
                 return b.results[0].score - a.results[0].score; // Pontuação
             } else if (b.results[0].accuracy !== a.results[0].accuracy) {
                 return b.results[0].accuracy - a.results[0].accuracy; // Precisão
-            } else if (b.results[0].averageTime !== a.results[0].averageTime) {
-                return a.results[0].averageTime - b.results[0].averageTime; // Tempo médio (menor é melhor)
             } else if (b.results[0].totalCorrect !== a.results[0].totalCorrect) {
                 return b.results[0].totalCorrect - a.results[0].totalCorrect; // Total correto
             } else if (b.results[0].totalAttempts !== a.results[0].totalAttempts) {
                 return a.results[0].totalAttempts - b.results[0].totalAttempts; // Total de tentativas (menor é melhor)
+            } else if (b.results[0].averageTime !== a.results[0].averageTime) {
+                return a.results[0].averageTime - b.results[0].averageTime; // Tempo médio (menor é melhor)
             } else {
                 return a.results[0].totalTimeSpent - b.results[0].totalTimeSpent; // Tempo total gasto (menor é melhor)
             }

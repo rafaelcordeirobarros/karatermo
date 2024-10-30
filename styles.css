@@ -219,9 +219,22 @@ h1 .rmo {
     background-color: #303f9f;
 }
 
-#date-options .answered-date {
+#date-options .correct-answered-date {
 
-    background-color: #56565a !important;
+    color: #4CAF50;
+    padding: 10px;
+    border: 2px solid #4CAF50;
+    border-radius: 8px;
+    background-color: #e8f5e9;
+}
+
+#date-options .wrong-answered-date {
+
+    color: #af4c4c;
+    padding: 10px;
+    border: 2px solid #af4c4c;
+    border-radius: 8px;
+    background-color: #f5e8e8;
 }
 
 #codigoLivre{

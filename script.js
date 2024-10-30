@@ -157,28 +157,29 @@ function setDailyTerm(terms) {
     const results = JSON.parse(localStorage.getItem("karatermoResults")) || [];
     const termAnswered = results.some(result => result.term === dailyTerm.term);
     
-    if (termAnswered) {
-        feedbackMessage.innerHTML = `Você já descobriu o termo do dia! Aguardando o próximo dia.`;
-        feedbackMessage.style.display = 'block';
-        displayTermAndMeaning(dailyTerm.term, dailyTerm.meaning); // Exibe o termo e o significado com a formatação desejada
-        displayStatistics();
-        return;
-    }
-
     if (dailyTerm) {
         termContainer.style.display = 'block';
         currentTerm = dailyTerm;
         termElement.textContent = "";
         meaningElement.textContent = "";
-        questionTextElement.textContent = currentTerm.question.questionText;
         choicesElement.innerHTML = "";
 
-        currentTerm.question.choices.forEach(choice => {
-            const button = document.createElement("button");
-            button.textContent = choice.charAt(0).toUpperCase() + choice.slice(1);
-            button.onclick = () => checkAnswer(choice);
-            choicesElement.appendChild(button);
-        });
+        if (termAnswered) {
+            feedbackMessage.innerHTML = `Você já descobriu o termo do dia! Aguardando o próximo dia.`;
+            feedbackMessage.style.display = 'block';
+            displayTermAndMeaning(dailyTerm.term, dailyTerm.meaning); // Exibe o termo e o significado com a formatação desejada
+            displayStatistics();
+            return;
+
+        }else{
+            questionTextElement.textContent = currentTerm.question.questionText;
+            currentTerm.question.choices.forEach(choice => {
+                const button = document.createElement("button");
+                button.textContent = choice.charAt(0).toUpperCase() + choice.slice(1);
+                button.onclick = () => checkAnswer(choice);
+                choicesElement.appendChild(button);
+            });
+        }
 
         startTime = new Date(); // Inicia o tempo ao carregar o termo
     } else {
@@ -456,11 +457,11 @@ async function loadRanking() {
                 <span class="expand-icon"><i class="fas fa-chevron-down"></i></span>
                 <div class="collapsible" style="display: none;">
                     <div class="collapsible-content">
-                        <span>Precisão: ${accuracyPercent}%</span> | 
-                        <span>Tempo Médio: ${formatTime(averageTime)}</span> | 
-                        <span>Total Corretos: ${player.results[0].totalCorrect}</span> | 
-                        <span>Total de Tentativas: ${player.results[0].totalAttempts}</span> | 
-                        <span>Tempo Total: ${(player.results[0].totalTimeSpent / 60).toFixed(2)} min</span>
+                        <span><b>Precisão:</b> ${accuracyPercent}%</span> | 
+                        <span><b>Total Corretos:</b> ${player.results[0].totalCorrect}</span> | 
+                        <span><b>Total de Tentativas:</b> ${player.results[0].totalAttempts}</span> | 
+                        <span><b>Tempo Médio:</b> ${(averageTime).toFixed(2)} seg</span> | 
+                        <span><b>Tempo Total:</b> ${formatTime(player.results[0].totalTimeSpent / 60)}</span>
                     </div>
                 </div>
             `;
@@ -495,7 +496,9 @@ async function loadAvailableDates() {
     dateOptionsContainer.innerHTML = "";
     const terms = await loadTerms();
     const answeredTerms = JSON.parse(localStorage.getItem("karatermoResults")) || [];
-    const answeredDates = terms.filter(item => answeredTerms.some(answered => answered.term == item.term)).flatMap(item => item.usage);
+    const correctAnsweredDates = terms.filter(item => answeredTerms.some(answered => answered.term == item.term && answered.correct)).flatMap(item => item.usage);
+    const wrongAnsweredDates = terms.filter(item => answeredTerms.some(answered => answered.term == item.term && !answered.correct)).flatMap(item => item.usage);
+
     let today = todayInBrazil().setHours(0, 0, 0, 0);  // Data de hoje sem horas/minutos/segundos para comparar
     
     const availableDates = terms
@@ -506,10 +509,12 @@ async function loadAvailableDates() {
     availableDates.forEach(date => {
         const dateButton = document.createElement("button");
         dateButton.textContent = date;
-        if (answeredDates.some(item => item == date)){ 
-            dateButton.setAttribute("disabled", "disabled");
-            dateButton.classList.add("answered-date");
-        }
+        
+        if (correctAnsweredDates.some(item => item == date))
+            dateButton.classList.add("correct-answered-date");
+        if (wrongAnsweredDates.some(item => item == date))
+            dateButton.classList.add("wrong-answered-date");
+
         dateButton.onclick = () => loadTermForDate(date);
         dateOptionsContainer.appendChild(dateButton);
     });

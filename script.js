@@ -6,6 +6,7 @@ const choicesElement = document.getElementById("choices");
 const feedbackElement = document.getElementById("feedback");
 const statsContainer = document.getElementById("stats-container");
 const statisticsElement = document.getElementById("statistics");
+const divSendStatisticsElement = document.getElementById("divSendStatistics");
 const feedbackMessage = document.getElementById("feedbackMessage");
 
 let currentTerm;
@@ -288,6 +289,8 @@ async function upsertResults(resultData) {
 // Função para exibir as estatísticas do usuário
 function displayStatistics() {
     const results = JSON.parse(localStorage.getItem("karatermoResults")) || [];
+    const player = JSON.parse(localStorage.getItem("karatermoPlayer")) || [];
+    
     const totalTerms = results.length;
     const totalCorrect = results.filter(result => result.correct).length;
     const totalAttempts = results.reduce((sum, result) => sum + result.attempts, 0);
@@ -299,6 +302,11 @@ function displayStatistics() {
     const rawScore = (1000 * (accuracy / 100)) - (averageTime / 10);
     const score = Math.max(0, Math.round(rawScore)); // Ajusta para zero caso seja negativo
 
+    if (player)
+        divSendStatisticsElement.style.display = "none";
+    else
+        divSendStatisticsElement.style.display = "block";
+        
     // Exibe a pontuação antes das demais estatísticas
     statisticsElement.innerHTML = `
         <p class="score">Pontuação: <span>${score}</span></p>
@@ -306,7 +314,7 @@ function displayStatistics() {
         <p>Número de acertos: ${totalCorrect}</p>
         <p>Número de erros: ${totalTerms - totalCorrect}</p>
         <p>Quantidade de tentativas: ${totalAttempts}</p>
-        <p>Tempo médio gasto por termo: ${formatTime(averageTime)}</p>
+        <p>Tempo médio gasto por termo (seg): ${(averageTime).toFixed(2)}</p>
     `;
 
     statsContainer.style.display = "block"; // Mostra o contêiner de estatísticas
@@ -329,11 +337,52 @@ const instructionModal = document.getElementById("instructionModal");
 const dateModal = document.getElementById("dateModal");
 const helpIcon = document.getElementById("help-icon");
 const settingsIcon = document.getElementById("settings-icon");
+const userInfoIcon = document.getElementById("userInfo-icon");
 const closeButtons = document.querySelectorAll(".close-button");
 const dateOptionsContainer = document.getElementById("date-options");
 const rankingIcon = document.getElementById("ranking-icon");
 const rankingModal = document.getElementById("ranking-modal");
 const sendResultsModal = document.getElementById("send-stats-modal");
+
+function toggleMenu() {
+    const menu = document.getElementById('menu');
+    const icon = document.querySelector('.menu-icon');
+    menu.classList.toggle('open');
+    icon.classList.toggle('open');
+  }
+  
+  // Fecha o menu ao clicar em um item
+  document.querySelectorAll('#menu a').forEach(item => {
+    item.addEventListener('click', () => {
+      closeMenu();
+    });
+  });
+  
+  // Fecha o menu ao clicar fora dele
+  document.addEventListener('click', (event) => {
+    const menu = document.getElementById('menu');
+    const icon = document.querySelector('.menu-icon');
+  
+    if (!menu.contains(event.target) && !icon.contains(event.target)) {
+      closeMenu();
+    }
+  });
+  
+  function closeMenu() {
+    const menu = document.getElementById('menu');
+    const icon = document.querySelector('.menu-icon');
+    menu.classList.remove('open');
+    icon.classList.remove('open');
+  }
+  
+
+function openModal(modalId) {
+    document.getElementById(modalId).style.display = "flex";
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = "none";
+}
 
 // Evento para abrir o modal de instruções
 helpIcon.onclick = () => {
@@ -350,6 +399,11 @@ rankingIcon.onclick = async () => {
 settingsIcon.onclick = async () => {
     dateModal.style.display = "block";
     await loadAvailableDates();
+};
+
+// Evento para abrir o modal de seleção de data
+userInfoIcon.onclick = async () => {
+    openModal('send-stats-modal');
 };
 
 

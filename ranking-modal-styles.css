@@ -145,3 +145,16 @@
 .position.bronze {
     color: #cd7f32;
 }
+
+
+/* Ajustes para telas menores */
+@media (max-width: 375px) {
+
+    .ranking-list li {
+
+        font-size: 0.8em !important;
+
+        
+    }
+    
+}

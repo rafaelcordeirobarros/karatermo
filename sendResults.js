@@ -3,14 +3,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("ranking-form").addEventListener("submit", saveStats);
 });
 
-function openModal(modalId) {
-    document.getElementById(modalId).style.display = "flex";
-}
-
-function closeModal(modalId) {
-    document.getElementById(modalId).style.display = "none";
-}
-
 function saveStats(event) {
     event.preventDefault();
     const name = document.getElementById("name").value;

@@ -55,7 +55,7 @@ body {
 }
 
 /* Alinhamento dos ícones à direita com espaçamento */
-.right-icons {
+.right-icons , .left-icons{
     display: flex;
     gap: 15px;
 }
@@ -318,6 +318,10 @@ h1 .rmo {
         padding: 15px;
     }
 
+    .right-icons , .left-icons{
+        gap: 10px;
+    }
+
     h1 {
         font-size: 1.5em;
     }
@@ -342,3 +346,16 @@ h1 .rmo {
     }
 }
 
+/* Ajustes para telas menores */
+@media (max-width: 375px) {
+
+    #divMenuHamburguer {
+        display: block !important;
+        font-size: 1 em;
+    }
+
+    .right-icons , .left-icons{
+        display: none;
+    }
+    
+}

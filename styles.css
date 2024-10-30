@@ -215,10 +215,6 @@ h1 .rmo {
     cursor: pointer;
 }
 
-#date-options button:hover {
-    background-color: #303f9f;
-}
-
 #date-options .correct-answered-date {
 
     color: #4CAF50;

@@ -32,7 +32,8 @@ function getResults() {
     console.log({ reportDateTime: (new Date()).totalTime, score, accuracy, averageTime,totalAttempts, totalCorrect, totalTerms, totalTimeSpent } );
     const time = todayInBrazil().getTime();
     console.log(time);
-    return { reportDateTime: time, score, accuracy, averageTime,totalAttempts, totalCorrect, totalTerms, totalTimeSpent }   
+    console.log(results);
+    return { reportDateTime: time, score, accuracy, averageTime,totalAttempts, totalCorrect, totalTerms, totalTimeSpent, answeredTerms: results };   
 }
 
 

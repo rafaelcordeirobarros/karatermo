@@ -19,75 +19,6 @@ const endpoint_getTerms = endpoint_root + '/getTerms';
 const endpoint_getResults = endpoint_root + '/getResults';
 const endpoint_upsertResults = endpoint_root + '/upsertResults';
 
-
-function localStorageExpires()
-{
-    var toRemove = [],                      // Itens para serem removidos
-        currentDate = todayInBrazil().getTime(); // Data atual em milissegundos
-
-    for (var i = 0, j = localStorage.length; i < j; i++) {
-       var key = localStorage.key(i),
-           value = localStorage.getItem(key);
-
-       // Verifica se o formato do item para evitar conflitar com outras aplicações
-       if (value && value[0] === "{" && value.slice(-1) === "}") {
-
-            // Decodifica de volta para JSON
-            var current = JSON.parse(value);
-
-            // Checa a chave expires do item especifico se for mais antigo que a data atual ele salva no array
-            if (current.expires  && current.expires <= currentDate ) {
-                toRemove.push(key);
-            }
-       }
-    }
-
-    // Remove itens que já passaram do tempo
-    // Se remover no primeiro loop isto poderia afetar a ordem,
-    // pois quando se remove um item geralmente o objeto ou array são reordenados
-    for (var i = toRemove.length - 1; i >= 0; i--) {
-        localStorage.removeItem(toRemove[i]);
-    }
-}
-
-localStorageExpires();//Auto executa a limpeza
-
-/**
- * Função para adicionar itens no localStorage
- * @param {string} chave Chave que será usada para obter o valor posteriormente
- * @param {*} valor Quase qualquer tipo de valor pode ser adicionado, desde que não falhe no JSON.stringify
- * @param {number} Tempo de vida em minutos do item
- */
-function setLocalStorage(chave, valor, minutos)
-{
-    var expirarem = todayInBrazil().getTime() + (60000 * minutos);
-
-    localStorage.setItem(chave, JSON.stringify({
-        "value": valor,
-        "expires": expirarem
-    }));
-}
-
-/**
- * Função para obter itens do localStorage que ainda não expiraram
- * @param {string} chave Chave para obter o valor associado
- * @return {*} Retorna qualquer valor, se o item tiver expirado irá retorna undefined
- */
-function getLocalStorage(chave)
-{
-    localStorageExpires();//Limpa itens
-
-    var value = localStorage.getItem(chave);
-
-    if (value && value[0] === "{" && value.slice(-1) === "}") {
-
-        // Decodifica de volta para JSON
-        var current = JSON.parse(value);
-
-        return current.value;
-    }
-}
-
 // Função para carregar os termos do arquivo JSON com cache em cookies de 1 dia
 let terms;
 async function loadTerms() {
@@ -127,20 +58,8 @@ async function loadTerms() {
 }
 
 
-function todayInBrazil(){
-    // Create a new Date object with the current date and time
-    let date = new Date();
-    // Get the current time in milliseconds since January 1, 1970, 00:00:00 UTC
-    let utcTime = date.getTime() + (date.getTimezoneOffset() * 60000);
-    // Create a new Date object for GMT-3
-    let todayDate = new Date(utcTime - (3 * 3600000));
-
-    return todayDate;
-}
-
-var refenceDate = todayInBrazil().getFullYear() + "-" + (todayInBrazil().getMonth()+1).toString().padStart(2,"0") + "-" + todayInBrazil().getDate().toString().padStart(2,"0");
-
 // Função para definir o termo do dia
+var refenceDate = todayInBrazil().getFullYear() + "-" + (todayInBrazil().getMonth()+1).toString().padStart(2,"0") + "-" + todayInBrazil().getDate().toString().padStart(2,"0");
 function setDailyTerm(terms) {
     // resetando o conteudo;
     statsContainer.style.display = "none";
@@ -429,119 +348,10 @@ window.onclick = (event) => {
 // Função para carregar e exibir o ranking
 let rankingData;
 async function loadRanking() {
-    // Mostra o indicador de loading
-    document.getElementById('loading-ranking').style.display = 'flex';
 
-    try {
-        await fetch(endpoint_getResults)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Erro na requisição: ' + response.status);
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('resultados recebidos:', data);
-                rankingData = data;
-            })
-            .catch(error => {
-                console.error('Erro ao buscar termos:', error);
-            });
-
-        // Filtrar os resultados para manter apenas o último resultado de cada jogador
-        const latestResults = rankingData.map(player => {
-            const latestResult = player.results.reduce((latest, current) => {
-                return current.reportDateTime > latest.reportDateTime ? current : latest;
-            });
-            return { player: player.player, results: [latestResult] };
-        });
-
-        // Ordena os jogadores com base na pontuação e critérios de desempate
-        latestResults.sort((a, b) => {
-            if (b.results[0].score !== a.results[0].score) {
-                return b.results[0].score - a.results[0].score; // Pontuação
-            } else if (b.results[0].accuracy !== a.results[0].accuracy) {
-                return b.results[0].accuracy - a.results[0].accuracy; // Precisão
-            } else if (b.results[0].totalCorrect !== a.results[0].totalCorrect) {
-                return b.results[0].totalCorrect - a.results[0].totalCorrect; // Total correto
-            } else if (b.results[0].totalAttempts !== a.results[0].totalAttempts) {
-                return a.results[0].totalAttempts - b.results[0].totalAttempts; // Total de tentativas (menor é melhor)
-            } else if (b.results[0].averageTime !== a.results[0].averageTime) {
-                return a.results[0].averageTime - b.results[0].averageTime; // Tempo médio (menor é melhor)
-            } else {
-                return a.results[0].totalTimeSpent - b.results[0].totalTimeSpent; // Tempo total gasto (menor é melhor)
-            }
-        });
-
-        // Atualiza o conteúdo do modal
-        const podium = document.querySelector('.podium');
-        const rankingList = document.getElementById('ranking-items');
-
-        // Limpa o conteúdo anterior
-        podium.innerHTML = '';
-        rankingList.innerHTML = '';
-
-        if (!latestResults || latestResults.length === 0) {
-            podium.innerHTML = 'Nenhum resultado foi enviado. Seja o primeiro e envie suas estatísticas.';
-        }
-
-        // Atualiza o pódio e a lista de ranking
-        latestResults.forEach((player, index) => {
-            // Pódio
-            if (index < 3) {
-                const podiumPlace = document.createElement('div');
-                podiumPlace.className = `podium-place ${index === 0 ? 'first' : index === 1 ? 'second' : 'third'}`;
-                podiumPlace.innerHTML = `
-                    <div class="player-name">${player.player.name}</div>
-                    <div class="score">${player.results[0].score} pontos</div>
-                    <div class="place-number">${index + 1}</div>
-                `;
-                podium.appendChild(podiumPlace);
-            }
-
-            // Lista de ranking
-            const listItem = document.createElement('li');
-            const accuracyPercent = (player.results[0].accuracy).toFixed(0);
-            const averageTime = player.results[0].averageTime;
-            const positionIcon = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
-
-            listItem.innerHTML = `
-                <span class="position ${positionIcon}">${index < 3 ? `<i class="fas fa-medal"></i> ${index + 1}º` : index + 1}</span> 
-                <strong>${player.player.name}</strong>: ${player.results[0].score} pontos 
-                <span class="expand-icon"><i class="fas fa-chevron-down"></i></span>
-                <div class="collapsible" style="display: none;">
-                    <div class="collapsible-content">
-                        <span><b>Precisão:</b> ${accuracyPercent}%</span> | 
-                        <span><b>Total Corretos:</b> ${player.results[0].totalCorrect}</span> | 
-                        <span><b>Total de Tentativas:</b> ${player.results[0].totalAttempts}</span> | 
-                        <span><b>Tempo Médio:</b> ${(averageTime).toFixed(2)} seg</span> | 
-                        <span><b>Tempo Total:</b> ${formatTime(player.results[0].totalTimeSpent / 60)}</span>
-                    </div>
-                </div>
-            `;
-            rankingList.appendChild(listItem);
-
-            // Evento para colapsar os critérios de desempate
-            listItem.querySelector('.expand-icon').onclick = () => {
-                const collapsible = listItem.querySelector('.collapsible');
-                const icon = listItem.querySelector('.expand-icon i');
-                if (collapsible.style.display === 'block') {
-                    collapsible.style.display = 'none';
-                    icon.classList.remove('fa-chevron-up');
-                    icon.classList.add('fa-chevron-down');
-                } else {
-                    collapsible.style.display = 'block';
-                    icon.classList.remove('fa-chevron-down');
-                    icon.classList.add('fa-chevron-up');
-                }
-            };
-        });
-    } catch (error) {
-        console.error('Erro ao carregar o ranking:', error);
-    } finally {
-        // Esconde o indicador de loading
-        document.getElementById('loading-ranking').style.display = 'none';
-    }
+    await loadingRankingSelect();
+    // await loadRankingCarousel();
+    //await loadRankingTabs();
 }
 
 

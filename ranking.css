@@ -1,0 +1,39 @@
+#ranking-content {
+    margin-top: 1em;
+}
+
+.content {
+    width: 100%;
+    background-color: #fff;
+}
+
+.select-container {
+    
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+}
+
+.select-container label {
+    font-size: 1em;
+    color: #444;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+#rankingSelect {
+    padding: 3px;
+    font-size: 0.8em;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    outline: none;
+    cursor: pointer;
+}
+
+#rankingSelect:focus {
+    border-color: #000;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}

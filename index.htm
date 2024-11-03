@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="ranking-modal-styles.css">
     <link rel="stylesheet" href="sendResults.css">
+    <link rel="stylesheet" href="ranking.css">
     <link rel="stylesheet" href="menuHamburguer.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -95,21 +96,7 @@
         <div class="modal-content">
             <span class="close-button">&times;</span>
             <h2>Ranking</h2>
-            <!-- Elemento "loading" que será exibido enquanto o ranking está sendo carregado -->
-            <div id="loading-ranking" class="loading" style="display: none;">
-                <i class="fas fa-spinner fa-spin loader"></i>
-                <p>Carregando ranking...</p>
-            </div>
             <div id="ranking-content">
-                <div class="podium">
-                    <!-- As posições do pódio serão preenchidas dinamicamente via JavaScript -->
-                </div>
-                
-                <div class="ranking-list">
-                    <ul id="ranking-items">
-                        <!-- Os itens da lista serão preenchidos dinamicamente via JavaScript -->
-                    </ul>
-                </div>
             </div>
         </div>
     </div>
@@ -148,6 +135,9 @@
         </div>
     </div>    
 
+    <script src="util.js"></script>
+    <script src="localStorageFunctions.js"></script>
+    <script src="ranking.js"></script>
     <script src="script.js"></script>
     <script src="sendResults.js"></script>
 </body>

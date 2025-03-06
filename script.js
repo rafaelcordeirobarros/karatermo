@@ -72,12 +72,13 @@ function setDailyTerm(terms) {
     attempts = 0;
 
     const dailyTerm = terms.find(term => term.usage.includes(refenceDate));
-
+    
     // Verifica se o usuário já respondeu ao termo do dia
     const results = JSON.parse(localStorage.getItem("karatermoResults")) || [];
-    const termAnswered = results.some(result => result.term === dailyTerm.term);
+    let termAnswered;
     
     if (dailyTerm) {
+        termAnswered = results.some(result => result.term === dailyTerm.term);
         termContainer.style.display = 'block';
         currentTerm = dailyTerm;
         termElement.textContent = "";

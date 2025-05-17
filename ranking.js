@@ -1,5 +1,28 @@
 let rankingContainer = document.getElementById("ranking-content");
 
+
+  // Função para atualizar o conteúdo
+async function updateContent(selectedRanking) {
+
+    const contentDiv = document.getElementById("content");
+    contentDiv.innerHTML = `<!-- Elemento "loading" que será exibido enquanto o ranking está sendo carregado -->
+                            <div id="loading-ranking" class="loading" style="display: none;">
+                                <i class="fas fa-spinner fa-spin loader"></i>
+                                <p>Carregando ranking...</p>
+                            </div>
+                            <div class="podium">
+                                <!-- As posições do pódio serão preenchidas dinamicamente via JavaScript -->
+                            </div>
+                            <div class="ranking-list">
+                                <ul id="ranking-items">
+                                    <!-- Os itens da lista serão preenchidos dinamicamente via JavaScript -->
+                                </ul>
+                            </div>`;
+
+    await loadRankingContent(selectedRanking);
+}
+
+
 async function loadingRankingSelect() {
 
     rankingContainer = document.getElementById("ranking-content");
@@ -29,49 +52,8 @@ async function loadingRankingSelect() {
     ];
     
     // Inicializa o carrossel
-    await populateSelect(optionsData);
+    await populateSelect("rankingSelect", optionsData, updateContent);
     
-}
-
-async function populateSelect(options) {
-
-    const rankingSelect = document.getElementById("rankingSelect");
-
-    options.forEach(option => {
-        const selectOption = document.createElement("option");
-        selectOption.value = option.id;
-        selectOption.textContent = option.label;
-        rankingSelect.appendChild(selectOption);
-    });
-
-    rankingSelect.addEventListener("change", () => {
-        updateContent(rankingSelect.value);
-    });
-
-    // Define o conteúdo inicial
-    updateContent();
-}
-
-
-  // Função para atualizar o conteúdo
-async function updateContent(selectedRanking) {
-
-    const contentDiv = document.getElementById("content");
-    contentDiv.innerHTML = `<!-- Elemento "loading" que será exibido enquanto o ranking está sendo carregado -->
-                            <div id="loading-ranking" class="loading" style="display: none;">
-                                <i class="fas fa-spinner fa-spin loader"></i>
-                                <p>Carregando ranking...</p>
-                            </div>
-                            <div class="podium">
-                                <!-- As posições do pódio serão preenchidas dinamicamente via JavaScript -->
-                            </div>
-                            <div class="ranking-list">
-                                <ul id="ranking-items">
-                                    <!-- Os itens da lista serão preenchidos dinamicamente via JavaScript -->
-                                </ul>
-                            </div>`;
-
-    await loadRankingContent(selectedRanking);
 }
 
 

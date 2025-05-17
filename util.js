@@ -9,3 +9,23 @@ function todayInBrazil(){
 
     return todayDate;
 }
+
+
+async function populateSelect(selectObjectId, options, onChangeFunction) {
+
+    const selectObject = document.getElementById(selectObjectId);
+
+    options.forEach(option => {
+        const selectOption = document.createElement("option");
+        selectOption.value = option.id;
+        selectOption.textContent = option.label;
+        selectObject.appendChild(selectOption);
+    });
+
+    selectObject.addEventListener("change", () => {
+        onChangeFunction(selectObject.value);
+    });
+
+    // Define o conteúdo inicial
+    onChangeFunction();
+}

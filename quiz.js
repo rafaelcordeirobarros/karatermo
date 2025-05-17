@@ -69,14 +69,14 @@ async function loadingDifficultySelect() {
     // Estrutura de dados para as abas e seu conteúdo
     const optionsData = [
         { id: "unselected", label: "Selecione"},
-        { id: "Azul", label: "Azul", colorClass: "icon-azul"},
-        { id: "Amarela", label: "Amarela", colorClass: "icon-amarela"},
-        { id: "Vermelha", label: "Vermelha", colorClass: "icon-vermelha"},
-        { id: "Laranja", label: "Laranja", colorClass: "icon-laranja"},
-        { id: "Verde", label: "Verde", colorClass: "icon-verde"},
-        { id: "Roxa", label: "Roxa", colorClass: "icon-roxa"},
-        { id: "Marrom", label: "Marrom", colorClass: "icon-marrom"},
-        { id: "Preta", label: "Preta", colorClass: "icon-preta" }
+        { id: "blue", label: "Azul", colorClass: "icon-azul"},
+        { id: "yellow", label: "Amarela", colorClass: "icon-amarela"},
+        { id: "red", label: "Vermelha", colorClass: "icon-vermelha"},
+        { id: "orange", label: "Laranja", colorClass: "icon-laranja"},
+        { id: "green", label: "Verde", colorClass: "icon-verde"},
+        { id: "purple", label: "Roxa", colorClass: "icon-roxa"},
+        { id: "brown", label: "Marrom", colorClass: "icon-marrom"},
+        { id: "black", label: "Preta", colorClass: "icon-preta" }
     ];
     
     // Inicializa o carrossel
@@ -136,7 +136,7 @@ function resetQuiz(difficultyLevel){
 
         if (selectedDifficultyLevel != ""){
             document.getElementById("difficultySelect").disabled = true;
-            quizData = getQuizTerms(10,"yellow");
+            quizData = getQuizTerms(10,selectedDifficultyLevel);
             showQuestion();
         }else{
             document.getElementById("difficultySelect").selectedIndex = 0;
@@ -146,9 +146,9 @@ function resetQuiz(difficultyLevel){
 
 function getQuizTerms(qtQuizTerms, beltColor) {
   const distribution = {
-    easy: Math.floor(qtQuizTerms * 0.7),
-    medium: Math.floor(qtQuizTerms * 0.2),
-    hard: qtQuizTerms - Math.floor(qtQuizTerms * 0.7) - Math.floor(qtQuizTerms * 0.2),
+    easy: Math.floor(qtQuizTerms * 0.6),
+    medium: Math.floor(qtQuizTerms * 0.3),
+    hard: qtQuizTerms - Math.floor(qtQuizTerms * 0.6) - Math.floor(qtQuizTerms * 0.3),
   };
 
   // Função de embaralhamento (Fisher-Yates)

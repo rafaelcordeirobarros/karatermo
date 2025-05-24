@@ -144,7 +144,7 @@ function resetQuiz(difficultyLevel){
         container.innerHTML = "";        
         console.log("selected:" + selectedDifficultyLevel);
 
-        if (selectedDifficultyLevel != ""){
+        if (selectedDifficultyLevel != "" && document.getElementById("userName").value!=""){
           document.getElementById("span-start-date").innerHTML = todayInBrazil().toLocaleString();
           document.getElementById("span-end-date").innerHTML = "";
           document.getElementById("span-user-name").innerHTML = document.getElementById("userName").value;
@@ -154,6 +154,9 @@ function resetQuiz(difficultyLevel){
           quizData = getQuizTerms(20,selectedDifficultyLevel);
           showQuestion();
         }else{
+            if (selectedDifficultyLevel != "" && document.getElementById("userName").value == ""){
+              alert("Preencha seu nome");
+            }
 
             document.getElementById("quiz-user-information-container").style.display = "none";
             document.getElementById("quiz-settings-container").style.display = "block";

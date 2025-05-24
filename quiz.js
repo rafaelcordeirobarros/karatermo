@@ -6,6 +6,7 @@ let quizData = [
 let currentQuestionIndex = 0;
 let score = 0;
 let selectedDifficultyLevel = "";
+let answeredQuestions = [];
 const container = document.getElementById("quiz-container");
 
 
@@ -88,6 +89,7 @@ function showQuestion() {
 
 
 function selectAnswer(choice) {
+    answeredQuestions.push({ term: quizData[currentQuestionIndex], answer:choice});
     if (choice === quizData[currentQuestionIndex].question.correctAnswer) {
         score++;
     }
@@ -97,6 +99,9 @@ function selectAnswer(choice) {
 
 function showResults() {
     document.getElementById("span-end-date").innerHTML = todayInBrazil().toLocaleString();
+
+    let stringAnsweredQuestions = formatHTMLAnsweredQuestions();
+    
     container.innerHTML = `
         <div class="results">
             <div id="results-options">
@@ -109,8 +114,30 @@ function showResults() {
             <h2>Quiz Finalizado!</h2>
             <p>Sua nota foi ${((score/quizData.length)*10).toFixed(1)}</p>
             <p>Você acertou ${score} de ${quizData.length} perguntas.</p>
+            ${stringAnsweredQuestions}
         </div>
     `;
+}
+
+function formatHTMLAnsweredQuestions(){
+  let stringAnsweredQuestions = "";
+  if(answeredQuestions && answeredQuestions.length>0){
+      stringAnsweredQuestions += `<div id="answered-questions-container" >
+                                  <hr class="divisor">
+                                  <h3>Perguntas respondidas:</h3>`;
+      
+      answeredQuestions.forEach((answeredQuestion, index) => {
+        stringAnsweredQuestions += `
+                                  <div class="answered-question">
+                                      <p class="answered-questiontext">${index+1}. ${answeredQuestion.term.question.questionText}</p>
+                                      <p>${answeredQuestion.answer}</p>
+                                  </div>
+                              `;
+      });
+      
+      stringAnsweredQuestions += `</div>`;
+    }
+    return stringAnsweredQuestions;
 }
 
 function shareWhatsapp(){
@@ -140,6 +167,7 @@ function resetQuiz(difficultyLevel){
         console.log(difficultyLevel);
         selectedDifficultyLevel = difficultyLevel && difficultyLevel!="unselected" ? difficultyLevel : "";
         score = 0;
+        answeredQuestions = [];
         currentQuestionIndex = 0;
         container.innerHTML = "";        
         console.log("selected:" + selectedDifficultyLevel);
@@ -166,9 +194,9 @@ function resetQuiz(difficultyLevel){
 
 function getQuizTerms(qtQuizTerms, beltColor) {
   const distribution = {
-    easy: Math.floor(qtQuizTerms * 0.6),
+    easy: Math.floor(qtQuizTerms * 0.5),
     medium: Math.floor(qtQuizTerms * 0.3),
-    hard: qtQuizTerms - Math.floor(qtQuizTerms * 0.6) - Math.floor(qtQuizTerms * 0.3),
+    hard: qtQuizTerms - Math.floor(qtQuizTerms * 0.5) - Math.floor(qtQuizTerms * 0.3),
   };
 
   // Função de embaralhamento (Fisher-Yates)

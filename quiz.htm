@@ -44,7 +44,23 @@
                 <div class="spinner"></div>
                 <p>Carregando...</p>
         </div>
-        <div id="difficulty-level-container">
+        <div id="quiz-settings-container">
+            <div id="identity-container"></div>
+            <div id="difficulty-level-container"></div>
+        </div>
+        <div id="quiz-user-information-container" style="display: none;">
+            <div id="quiz-duration-container">
+                <div><label>Início: </label><span id="span-start-date"></span></div>
+                <div><label>Término: </label><span id="span-end-date"></span></div>
+            </div>
+            <div>
+                <label>Nome: </label><span id="span-user-name"></span>
+            </div>
+            <div>
+                <label>Exame para faixa: </label><span id="span-difficulty-selected"></span>
+            </div>
+            
+            <hr class="divisor">
         </div>
         <div id="quiz-container">
         </div>
@@ -53,5 +69,6 @@
     <script src="util.js"></script>
     <script src="localStorageFunctions.js"></script>
     <script src="quiz.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </body>
 </html>

@@ -3,66 +3,34 @@ let quizData = [
     {"_id":{"$oid":"671d954d8bbfc040a8eefc69"},"term":"Oi-zuki","meaning":"Soco executado enquanto o praticante avança em direção ao oponente.","question":{"questionText":"Qual é o nome do soco executado enquanto se avança em direção ao oponente?","choices":["Oi-zuki","Kizami-zuki","Jodan-uke","Gyaku-zuki"],"correctAnswer":"Oi-zuki"}}
 ];
 
-const endpoint_root = 'https://karatermo-api.onrender.com';
-const endpoint_getTerms = endpoint_root + '/getTerms';
-const endpoint_getResults = endpoint_root + '/getResults';
-const endpoint_upsertResults = endpoint_root + '/upsertResults';
-
-// Função para carregar os termos do arquivo JSON com cache em cookies de 1 dia
-let terms;
-async function loadTerms() {
-    // Exibe o overlay de loading
-    const loadingOverlay = document.getElementById("loading-overlay");
-    loadingOverlay.style.display = "flex";
-    
-    if (terms) {
-        loadingOverlay.style.display = "none"; // Oculta o loading
-        return terms;
-    }
-
-    // Verifica se os termos estão no cookie
-    const cachedTerms = getLocalStorage("terms");
-    if (cachedTerms) {
-        terms = cachedTerms;
-        loadingOverlay.style.display = "none"; // Oculta o loading
-        return terms;
-    }
-
-    try {
-        const response = await fetch(endpoint_getTerms);
-        if (!response.ok) throw new Error("Erro na requisição: " + response.status);
-
-        terms = await response.json();
-        console.log("Termos recebidos:", terms);
-
-        // Armazena os termos em um cookie por 1 dia
-        setLocalStorage("terms", terms, 1 * 24 * 60);
-    } catch (error) {
-        console.error("Erro ao buscar termos:", error);
-    }
-
-    // Oculta o overlay de loading ao finalizar
-    loadingOverlay.style.display = "none";
-    return terms;
-}
-
 let currentQuestionIndex = 0;
 let score = 0;
 let selectedDifficultyLevel = "";
-
 const container = document.getElementById("quiz-container");
 
 
+async function loadQuizScreen() {
+
+  loadIdentityContainer();
+  loadingDifficultySelect();
+}
+
+async function loadIdentityContainer() {
+
+    const identityContainer = document.getElementById("identity-container");
+    identityContainer.innerHTML = `<label for="userName">Nome Completo:</label>
+                                    <input type="text" id="userName" maxlength="30" required>`;
+
+}
+
 async function loadingDifficultySelect() {
 
-    difficultyLevelContainer = document.getElementById("difficulty-level-container");
+    const difficultyLevelContainer = document.getElementById("difficulty-level-container");
     difficultyLevelContainer.innerHTML = `<div class="select-container">
                                         <label for="difficultySelect">Exame para faixa:</label>
                                         <select id="difficultySelect">
                                             <!-- Opções serão geradas dinamicamente pelo JavaScript -->
                                         </select>
-                                        <i class="fas fa-redo" onclick="restartQuiz()"></i>
-                                        <hr class="divisor">
                                     </div>`;
 
 
@@ -84,6 +52,15 @@ async function loadingDifficultySelect() {
     
 }
 
+
+function setupProgressBar(progress, maxProgress, step) {
+  if (progress < maxProgress) {
+    progress *= step;
+    const barra = document.getElementById("progress-bar");
+    barra.style.width = `${progress}%`;
+  }
+}
+
 function showQuestion() {
     if (currentQuestionIndex >= quizData.length) {
         showResults();
@@ -92,6 +69,9 @@ function showQuestion() {
     
     const questionData = quizData[currentQuestionIndex];
     container.innerHTML = `
+        <div id="progress-container" style="width: 100%; background: #eee; border-radius: 8px; overflow: hidden;">
+          <div id="progress-bar" style="width: 0%; height: 20px; background: #4caf50; transition: width 0.3s;"></div>
+        </div>
         <div class="question">
             <p>${questionData.question.questionText}</p>
             <div id="choices">
@@ -101,7 +81,11 @@ function showQuestion() {
             </div>
         </div>
     `;
+
+    setupProgressBar(currentQuestionIndex,quizData.length, (1/quizData.length)*100);
 }
+
+
 
 function selectAnswer(choice) {
     if (choice === quizData[currentQuestionIndex].question.correctAnswer) {
@@ -112,12 +96,38 @@ function selectAnswer(choice) {
 }
 
 function showResults() {
+    document.getElementById("span-end-date").innerHTML = todayInBrazil().toLocaleString();
     container.innerHTML = `
         <div class="results">
+            <div id="results-options">
+                <div>
+                  <i id="icon-whatsapp" class="fab fa-whatsapp" onclick="shareWhatsapp()"></i>
+                  <a id="linkDownload" style="display: none;" download="screenshot.png">Baixar imagem</a>
+                </div>
+                <div><i id="icon-restart-quiz" class="fas fa-rotate-right" onclick="restartQuiz()"></i></div>
+            </div>
             <h2>Quiz Finalizado!</h2>
+            <p>Sua nota foi ${((score/quizData.length)*10).toFixed(1)}</p>
             <p>Você acertou ${score} de ${quizData.length} perguntas.</p>
         </div>
     `;
+}
+
+function shareWhatsapp(){
+  html2canvas(document.body).then(canvas => {
+    const imgData = canvas.toDataURL("image/png");
+
+    // Cria um link de download da imagem (o WhatsApp não permite envio direto)
+    const link = document.getElementById("linkDownload");
+    link.href = imgData;
+    link.click(); // Dispara download automático
+
+    // Redireciona para WhatsApp com mensagem
+    const texto = encodeURIComponent("Esse foi meu resultado no exame!");
+    const url = `https://wa.me/?text=${texto}`;
+    window.open(url, "_blank");
+
+  });
 }
 
 function restartQuiz(){
@@ -135,12 +145,19 @@ function resetQuiz(difficultyLevel){
         console.log("selected:" + selectedDifficultyLevel);
 
         if (selectedDifficultyLevel != ""){
-            document.getElementById("difficultySelect").disabled = true;
-            quizData = getQuizTerms(10,selectedDifficultyLevel);
-            showQuestion();
+          document.getElementById("span-start-date").innerHTML = todayInBrazil().toLocaleString();
+          document.getElementById("span-end-date").innerHTML = "";
+          document.getElementById("span-user-name").innerHTML = document.getElementById("userName").value;
+          document.getElementById("span-difficulty-selected").innerHTML = document.getElementById("difficultySelect").options[document.getElementById("difficultySelect").selectedIndex].text;
+          document.getElementById("quiz-user-information-container").style.display = "flex";
+          document.getElementById("quiz-settings-container").style.display = "none";
+          quizData = getQuizTerms(20,selectedDifficultyLevel);
+          showQuestion();
         }else{
+
+            document.getElementById("quiz-user-information-container").style.display = "none";
+            document.getElementById("quiz-settings-container").style.display = "block";
             document.getElementById("difficultySelect").selectedIndex = 0;
-            document.getElementById("difficultySelect").disabled = false;
         }
 }
 
@@ -199,16 +216,19 @@ function getQuizTerms(qtQuizTerms, beltColor) {
 
     // 2. Fallback para dificuldades mais altas
     const fallbackOrder = {
-      easy: ["medium", "hard"],
-      medium: ["hard"],
-      hard: []
+      easy: ["medium", "hard", "very hard", "very easy"],
+      medium: ["hard","very hard","easy","very easy"],
+      hard: ["very hard","medium","easy","very easy"]
     };
 
     for (const fallback of fallbackOrder[difficulty]) {
-      while (countNeeded > 0 && difficulties[fallback].length > 0) {
-        selected.push(difficulties[fallback].pop());
-        countNeeded--;
-        added++;
+      console.log(difficulties[fallback]);
+      if (difficulties[fallback]){
+        while (countNeeded > 0 && difficulties[fallback].length > 0) {
+          selected.push(difficulties[fallback].pop());
+          countNeeded--;
+          added++;
+        }
       }
     }
 
@@ -222,10 +242,8 @@ function getQuizTerms(qtQuizTerms, beltColor) {
   return shuffleArray(selected);
 }
 
-
-
 // Inicializa o jogo ao carregar a página
 window.onload = async () => {
     terms = await loadTerms();
-    loadingDifficultySelect();
+    loadQuizScreen();
 };

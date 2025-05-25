@@ -149,10 +149,7 @@ function shareWhatsapp(){
     link.href = imgData;
     link.click(); // Dispara download automático
 
-    // Redireciona para WhatsApp com mensagem
-    const texto = encodeURIComponent("Esse foi meu resultado no exame!");
-    const url = `https://wa.me/?text=${texto}`;
-    window.open(url, "_blank");
+    alert("abra o arquivo baixado e compartilhe no whatsapp.");
 
   });
 }

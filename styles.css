@@ -45,6 +45,10 @@ body {
     margin: 0;
 }
 
+.title a{
+    text-decoration: none;
+}
+
 /* Estilo para a combinação "Karate" e "rmo" */
 .karate {
     font-weight: bold;
@@ -138,6 +142,27 @@ h1 .rmo {
 #statistics .score span {
     font-weight: bold;
     color: #eb810f;
+}
+
+#feedbackMessage #startQuiz{
+    padding: 10px;
+    margin: 5px 0;
+    border: none;
+    border-radius: 8px;
+    background-color: #3f51b5;
+    color: white;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#feedbackMessage #startQuiz:hover {
+    background-color: #303f9f;
+}
+
+#feedbackMessage #startQuiz a{
+    text-decoration: none;
+    color: white;
 }
 
 /* Estilos do modal */

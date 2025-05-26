@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karatermo</title>
+    <link rel="icon" href="images/karatermo_icon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="quiz.css">
+    <link rel="stylesheet" href="freeQuiz.css">
+    <link rel="stylesheet" href="menuHamburguer.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header class="main-header">
+        <!-- <div id="divMenuHamburguer" style="display: none;">
+            <div class="menu-icon" onclick="toggleMenu()">
+              <div class="line"></div>
+              <div class="line"></div>
+              <div class="line"></div>
+            </div>
+            <nav id="menu" class="menu">
+              <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#sobre" onclick="helpIcon.click()">Informações</a></li>
+                <li><a href="#servicos" onclick="userInfoIcon.click()">Cadastro</a></li>
+                <li><a href="#contato" onclick="settingsIcon.click()">Configurações</a></li>
+              </ul>
+            </nav>
+        </div> -->
+        <div class="left-icons">
+            <!-- <i class="fas fa-user" id="userInfo-icon"></i>
+            <i class="fas fa-question-circle" id="help-icon"></i> -->
+        </div>
+        <h1 class="title">
+            <a href="./index.htm"><span class="karate">Karate</span><span class="rmo">rmo</span></a>
+        </h1>
+        <div class="right-icons">
+            <!-- <i class="fas fa-cog" id="settings-icon"></i> -->
+        </div>
+    </header>
+    <div class="container">
+        <div id="loading-overlay">
+                <div class="spinner"></div>
+                <p>Carregando...</p>
+        </div>
+        <div id="quiz-settings-container">
+            <div id="settings-container"></div>
+        </div>
+        <div id="quiz-user-information-container" style="display: none;">
+            <div id="quiz-duration-container">
+                <div><label>Início: </label><span id="span-start-date"></span></div>
+                <div><label>Término: </label><span id="span-end-date"></span></div>
+            </div>          
+            <hr class="divisor">
+        </div>
+        <div id="quiz-container">
+        </div>
+    </div>
+
+    <script src="util.js"></script>
+    <script src="localStorageFunctions.js"></script>
+    <script src="freeQuiz.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+</body>
+</html>

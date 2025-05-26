@@ -60,7 +60,8 @@ function setDailyTerm(terms) {
 
         startTime = new Date(); // Inicia o tempo ao carregar o termo
     } else {
-        feedbackMessage.innerHTML = "Hoje não há termo disponível. Volte amanhã!";
+        feedbackMessage.innerHTML = `<span>Hoje não há termo disponível. Que tal praticar no nosso Quiz?</span>
+                                     <div id="startQuiz"><a href="./freeQuiz.htm" >Ir para o Quiz</a></div>`;
         feedbackMessage.style.display = 'block';
     }
 }

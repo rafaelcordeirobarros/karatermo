@@ -149,8 +149,8 @@ function resetQuiz(difficultyLevel){
           quizData = getQuizTerms(document.getElementById("numberOfQuestions").value*1,selectedDifficultyLevel);
           showQuestion();
         }else{
-            if (selectedDifficultyLevel != "" && (document.getElementById("numberOfQuestions").value == "" || document.getElementById("numberOfQuestions").value<=0) ){
-              alert("Determine um número de questões válido!");
+            if (selectedDifficultyLevel != "" && (document.getElementById("numberOfQuestions").value == "" || document.getElementById("numberOfQuestions").value<=9) ){
+              alert("Determine um número de questões acima de 10 questões!");
             }
 
             document.getElementById("quiz-user-information-container").style.display = "none";

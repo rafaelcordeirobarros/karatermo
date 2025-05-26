@@ -19,7 +19,7 @@ async function loadSettingsContainer() {
 
     const settingsContainer = document.getElementById("settings-container");
     settingsContainer.innerHTML = `<label for="numberOfQuestions">Número de questões:</label>
-                                    <input type="number" id="numberOfQuestions" min="1" max="50" value="20" required>
+                                    <input type="number" id="numberOfQuestions" min="1" max="50" maxlenght="2" value="20" required>
                                     <button id="startQuiz" type="button" onClick="resetQuiz('black')" >Iniciar Quiz</button>`;
 
 }
@@ -141,7 +141,7 @@ function resetQuiz(difficultyLevel){
         currentQuestionIndex = 0;
         container.innerHTML = "";
 
-        if (selectedDifficultyLevel != "" && document.getElementById("numberOfQuestions").value!="" && document.getElementById("numberOfQuestions").value>0){
+        if (selectedDifficultyLevel != "" && document.getElementById("numberOfQuestions").value!="" && document.getElementById("numberOfQuestions").value>=10){
           document.getElementById("span-start-date").innerHTML = todayInBrazil().toLocaleString();
           document.getElementById("span-end-date").innerHTML = "";
           document.getElementById("quiz-user-information-container").style.display = "flex";
@@ -149,7 +149,7 @@ function resetQuiz(difficultyLevel){
           quizData = getQuizTerms(document.getElementById("numberOfQuestions").value*1,selectedDifficultyLevel);
           showQuestion();
         }else{
-            if (selectedDifficultyLevel != "" && (document.getElementById("numberOfQuestions").value == "" || document.getElementById("numberOfQuestions").value<=9) ){
+            if (selectedDifficultyLevel != "" && (document.getElementById("numberOfQuestions").value == "" || (document.getElementById("numberOfQuestions").value)<10) ){
               alert("Determine um número de questões acima de 10 questões!");
             }
 

@@ -73,9 +73,9 @@ async function loadRankingContent(selectedRanking){
                     }
                     return response.json();
                 })
-                .then(data => {
-                    console.log('resultados recebidos:', data);
-                    rankingData = data;
+                .then(response => {
+                    console.log('resultados recebidos:', response.data);
+                    rankingData = response  .data;
                 })
                 .catch(error => {
                     console.error('Erro ao buscar termos:', error);

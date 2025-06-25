@@ -155,7 +155,7 @@ async function upsertResults(resultData) {
         throw new Error('Erro ao inserir ou atualizar o resultado');
       }
   
-      const data = await response.json();
+      const data = (await response.json()).data;
       console.log('Resultado inserido ou atualizado:', data);
       console.log('ID do item:', data._id); // Acessa o ID do item inserido ou atualizado
     } catch (error) {

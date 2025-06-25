@@ -50,7 +50,7 @@ async function sendResults(lastResult) {
         existingPlayer.results = lastResult.results;
     }
 
-    const apiUrl = "https://karatermo-api.onrender.com/upsertResults";
+    const apiUrl = "https://karatermo-api.onrender.com/api/results"; // "https://karatermo-api.onrender.com/upsertResults";
 
     await fetch(apiUrl, {
         method: "POST",
@@ -60,9 +60,9 @@ async function sendResults(lastResult) {
         body: JSON.stringify(existingPlayer ?? lastResult),
     })
     .then(response => response.json())
-    .then(data => {
-        console.log("Dados enviados com sucesso:", data);
-        lastResult = data;
+    .then(response => {
+        console.log("Dados enviados com sucesso:", response.data);
+        lastResult = response.data;
     })
     .catch(error => {
         console.error("Erro ao enviar dados:", error);
@@ -77,16 +77,16 @@ async function sendResults(lastResult) {
 async function loadPlayerResult(email) {
 
     let playerResult;
-    await fetch(`https://karatermo-api.onrender.com/getResultByMail/${encodeURIComponent(email)}`)
+    await fetch(`https://karatermo-api.onrender.com/api/results/email/${encodeURIComponent(email)}`)
     .then(response => {
         if (!response.ok) {
         throw new Error('Erro na requisição: ' + response.status);
         }
         return response.json();
     })
-    .then(data => {
-        console.log('jogador carregado:', data);
-        playerResult = data;
+    .then(response => {
+        console.log('jogador carregado:', response.data);
+        playerResult = response.data;
         // Aqui você pode manipular os dados, como exibir na interface do usuário
     })
     .catch(error => {

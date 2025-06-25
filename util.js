@@ -1,7 +1,7 @@
 const endpoint_root = 'https://karatermo-api.onrender.com';
-const endpoint_getTerms = endpoint_root + '/getTerms';
-const endpoint_getResults = endpoint_root + '/getResults';
-const endpoint_upsertResults = endpoint_root + '/upsertResults';
+const endpoint_getTerms = endpoint_root + '/api/terms' // '/getTerms';
+const endpoint_getResults = endpoint_root + '/api/results' // '/getResults';
+const endpoint_upsertResults = endpoint_root + '/api/results' // '/upsertResults';
 
 // Função para carregar os termos do arquivo JSON com cache em cookies de 1 dia
 let terms;
@@ -27,7 +27,7 @@ async function loadTerms() {
         const response = await fetch(endpoint_getTerms);
         if (!response.ok) throw new Error("Erro na requisição: " + response.status);
 
-        terms = await response.json();
+        terms = (await response.json()).data;
         console.log("Termos recebidos:", terms);
 
         // Armazena os termos em um cookie por 1 dia

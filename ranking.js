@@ -40,6 +40,7 @@ async function loadingRankingSelect() {
     // Estrutura de dados para as abas e seu conteúdo
     const optionsData = [
         { id: "generalRanking", label: "Geral", colorClass: "icon-geral"},
+        { id: "last30Days", label: "Últimos 30 dias", colorClass: "icon-calendar" },
         { id: "Branca", label: "Branca", colorClass: "icon-branca"},
         { id: "Azul", label: "Azul", colorClass: "icon-azul"},
         { id: "Amarela", label: "Amarela", colorClass: "icon-amarela"},
@@ -85,7 +86,14 @@ async function loadRankingContent(selectedRanking){
         // Filtrar os resultados para manter apenas o último resultado de cada jogador (identificado por email)
         const latestResults = Object.values(
             rankingData
-                .filter(player => selectedRanking == "generalRanking" || player.player.belt == selectedRanking)
+                .filter(player => {
+                    // Se for "Últimos 30 dias" ou "Geral", não filtra por faixa (mostra todas)
+                    if (selectedRanking == "last30Days" || selectedRanking == "generalRanking") {
+                        return true;
+                    }
+                    // Senão, filtra pela faixa selecionada
+                    return player.player.belt == selectedRanking;
+                })
                 .reduce((acc, player) => {
                     const email = player.player.email.toLowerCase();
                     const latestResult = player.results.reduce((latest, current) => {
@@ -101,8 +109,21 @@ async function loadRankingContent(selectedRanking){
                 }, {})
         );
 
+        // Filtrar por data se a opção "Últimos 30 dias" estiver selecionada
+        let finalResults = latestResults;
+        if (selectedRanking == "last30Days") {
+            const todayBrazil = todayInBrazil();
+            const thirtyDaysAgo = new Date(todayBrazil.getTime() - (30 * 24 * 60 * 60 * 1000));
+            const thirtyDaysAgoTimestamp = thirtyDaysAgo.getTime();
+
+            finalResults = latestResults.filter(player => {
+                const reportTime = player.results[0].reportDateTime;
+                return reportTime && reportTime >= thirtyDaysAgoTimestamp;
+            });
+        }
+
         // Ordena os jogadores com base na pontuação e critérios de desempate
-        latestResults.sort((a, b) => {
+        finalResults.sort((a, b) => {
             if (b.results[0].score !== a.results[0].score) {
                 return b.results[0].score - a.results[0].score; // Pontuação
             } else if (b.results[0].totalCorrect !== a.results[0].totalCorrect) {
@@ -126,12 +147,12 @@ async function loadRankingContent(selectedRanking){
         podium.innerHTML = '';
         rankingList.innerHTML = '';
 
-        if (!latestResults || latestResults.length === 0) {
+        if (!finalResults || finalResults.length === 0) {
             podium.innerHTML = 'Nenhum resultado foi enviado. Seja o primeiro e envie suas estatísticas.';
         }
 
         // Atualiza o pódio e a lista de ranking
-        latestResults.forEach((player, index) => {
+        finalResults.forEach((player, index) => {
             // Pódio
             if (index < 3) {
                 const podiumPlace = document.createElement('div');

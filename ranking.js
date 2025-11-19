@@ -82,13 +82,24 @@ async function loadRankingContent(selectedRanking){
                 });
         }
 
-        // Filtrar os resultados para manter apenas o último resultado de cada jogador
-        const latestResults = rankingData.filter(player => selectedRanking == "generalRanking" || player.player.belt == selectedRanking).map(player => {
-            const latestResult = player.results.reduce((latest, current) => {
-                return current.reportDateTime > latest.reportDateTime ? current : latest;
-            });
-            return { player: player.player, results: [latestResult] };
-        });
+        // Filtrar os resultados para manter apenas o último resultado de cada jogador (identificado por email)
+        const latestResults = Object.values(
+            rankingData
+                .filter(player => selectedRanking == "generalRanking" || player.player.belt == selectedRanking)
+                .reduce((acc, player) => {
+                    const email = player.player.email.toLowerCase();
+                    const latestResult = player.results.reduce((latest, current) => {
+                        return current.reportDateTime > latest.reportDateTime ? current : latest;
+                    });
+
+                    // Se o email ainda não existe OU se o resultado atual é mais recente
+                    if (!acc[email] || latestResult.reportDateTime > acc[email].results[0].reportDateTime) {
+                        acc[email] = { player: player.player, results: [latestResult] };
+                    }
+
+                    return acc;
+                }, {})
+        );
 
         // Ordena os jogadores com base na pontuação e critérios de desempate
         latestResults.sort((a, b) => {
